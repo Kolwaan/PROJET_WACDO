@@ -1,0 +1,95 @@
+* {
+    box-sizing: border-box;
+}
+
+
+
+/**** MERCI ****/
+
+.texte_bouton_container {
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 2rem;
+}
+
+.merci {
+    width: 100%;
+    background-color: white; 
+    border-radius: 20px;
+    margin: 5rem 0 5rem 0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: clamp(19px, 4vw, 40px);
+    font-weight: 800;
+}
+
+h1 + p {
+    font-size: clamp(14px, 3vw, 26px);
+    font-weight: 800;
+}
+
+.a_bientot {
+    font-size: clamp(20px, 5vw, 50px);
+    font-weight: 600;
+    font-family: kalam;
+    font-style: italic;
+}
+
+h1, p {
+    margin: 2vw;
+}
+
+
+
+/**** style bouton sur style3.css ****/
+
+
+
+
+/* BREAKPOINT 1 */
+@media screen and (max-width: 980px) {
+    .texte_bouton_container {
+        align-items: center;
+}
+}
+    /* BREAKPOINT 2 */
+@media screen and (max-width: 750px) {
+h1 {
+    font-size: 2.5rem;
+}
+
+h1 + p {
+    font-size: 2rem;
+}
+
+.a_bientot {
+    font-size: 3rem;
+}
+
+}
+
+/* BREAKPOINT 3 */
+@media screen and (max-width: 615px) {
+    .texte_bouton_container {
+        width: 100%;
+        height: auto;
+    }
+
+    .merci {
+        width: 70%;
+        height: auto;
+    }
+}

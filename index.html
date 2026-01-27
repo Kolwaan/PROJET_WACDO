@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Wacdo</title>
+    <link rel="stylesheet" href="CSS/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const surPlaceClic = document.querySelector(".bonjour_item_3 a:first-child")
+            const aEmporterClic = document.querySelector(".bonjour_item_3 a:last-child")
+            
+            surPlaceClic.addEventListener("click", () => {
+                localStorage.setItem("SPouAEstorage", "Sur place : <strong>326</strong>")
+            })
+
+            aEmporterClic.addEventListener("click", () => {
+                localStorage.setItem("SPouAEstorage", "À emporter")
+            })
+        })
+    </script>
+
+
+</head>
+
+<body>
+    <main class="banner">
+
+        <img class="banner_img" src="ASSETS/images/mc_landing_banner.png" alt="bannière Wacdo">
+
+        <section class="bonjour_container">
+            <h1 class="bonjour_item_1">Bonjour,</h1>
+            <p class="bonjour_item_2">Souhaitez-vous consommer votre menu sur place <br> ou préférez-vous l'emporter ?
+            </p>
+
+
+            <div class="bonjour_item_3">
+                <a class="surplace_aemporter_item" href="choix.html">
+                    <img class="table_chaise_img" src="ASSETS/images/illustration-sur-place.png"
+                        alt="illustration Wacdo commander sur place">
+                    <p class="surplace_txt">Sur place</p>
+                </a>
+
+                <a class="surplace_aemporter_item" href="choix.html">
+                    <img class="sachet_img" src="ASSETS/images/illustration-a-emporter.png"
+                        alt="illustration Wacdo commander à emporter">
+                    <p class="aemporter_txt">À emporter</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+
+</body>
+
+</html>

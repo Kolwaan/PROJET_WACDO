@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numéro de chevalet</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/style3.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+        
+        
+        
+    <script defer>
+        document.addEventListener("DOMContentLoaded", () => {
+            const firstNumber = document.getElementById("first_number")
+            const secondNumber = document.getElementById("second_number")
+            const thirdNumber = document.getElementById("third_number")
+            const save = document.getElementById("enregistrer")
+            
+            firstNumber.oninput = () => {
+                firstNumber.value = firstNumber.value.replace(/\D/, "")
+
+                if (firstNumber.value.length === 1) {
+                    secondNumber.focus()
+                }    
+            }
+            
+            secondNumber.oninput = () => {
+                secondNumber.value = secondNumber.value.replace(/\D/, "")
+
+                if (secondNumber.value.length === 1) {
+                    thirdNumber.focus()
+                }
+            }
+                
+            thirdNumber.oninput = () => {
+                thirdNumber.value = thirdNumber.value.replace(/\D/, "")
+
+                if (thirdNumber.value.length === 1) {
+                    save.focus()
+                }
+            }
+            
+            
+            document.getElementById("chevalet").addEventListener("submit", (e) => {
+                e.preventDefault()
+                window.location.href = "merci.html"
+            })
+            
+        })
+    </script>    
+</head>
+
+
+<body>
+    <main class="banner">
+        <img class="banner_img" src="ASSETS/images/mc_landing_banner.png" alt="bannière Wacdo">
+
+        <section class="first_container">
+            <img src="ASSETS/images/chevalet_wacdo.png" alt="Chevalet Wacdo">
+            <div class="chevalet_container">
+                <h1>Pour être servis à table,</h1><br>
+                <p>Récupérez un chevalet et indiquez ici le numéro inscrit dessus</p>
+
+                <form class="formulaire" id="chevalet" method="get" action="#">
+                    <label for="first_number" class="label">Premier chiffre</label>
+                    <input type="text" value="" name="first_number" id="first_number" inputmode="numeric" pattern="[0-9]"
+                        maxlength="1" size="1"
+                        required autofocus>
+
+                    <label for="second_number" class="label">Deuxième chiffre</label>
+                    <input type="text" value="" name="second_number" id="second_number" inputmode="numeric" pattern="[0-9]"
+                        maxlength="1" size="1"
+                        required>
+
+                    <label for="third_number" class="label">Troisième chiffre</label>
+                    <input type="text" value="" name="third_number" id="third_number" inputmode="numeric" pattern="[0-9]"
+                        maxlength="1" size="1"
+                        required>
+                </form>
+            </div>
+
+            <label for="enregistrer" class="label">Enregistrer le numéro</label>
+            <input class="boutton" form="chevalet" id="enregistrer" name="enregistrer" type="submit"
+                    value="Enregistrez le numéro">
+        </section>
+    </main>
+
+
+</body>
+
+</html>

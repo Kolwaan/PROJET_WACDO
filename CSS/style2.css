@@ -1,0 +1,1175 @@
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+
+html {
+    font-size: 10px;
+}
+
+
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    font-family: "Roboto", sans-serif;
+}
+
+
+
+.sliderEtMenu {
+    width: auto;
+    min-width: 0;
+    padding: 2rem;
+
+}
+
+.error {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+/* SLIDER */
+
+.slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container du slider */
+.nav_images_container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    overflow-x: hidden;
+    padding: 6px;
+    gap: 15px;
+}
+
+
+.nav_images_container button {
+    width: 120px;
+    height: 120px;
+    background: none;
+    flex: 0 0 auto;
+    /* chaque item garde sa taille contenu */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: solid 1px black;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    padding: 5px;
+}
+
+.nav_images_container img {
+    object-fit: cover;
+    width: 80%;
+    height: 70%;
+}
+
+
+.fleches {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+
+.fleche_slider_reverse {
+    transform: scaleX(-1);
+}
+
+
+
+
+/* NOS MENUS */
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: clamp(0px, 4vw, 88px);
+    margin-top: 0;
+    flex: 1 1 auto;
+    box-sizing: border-box;
+
+}
+
+.nos_menus_txt {
+    font-size: 2rem;
+    margin: 40px 15px 40px 15px;
+}
+
+.nos_menus_txt h1 {
+    font-weight: 400;
+    margin: 5px 0 10px 0;
+}
+
+
+.nos_menus_img {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+
+.nos_menus_img button {
+    width: 20%;
+    background: none;
+    border: solid 1px black;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 2rem;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.nos_menus_img img {
+    width: 80%;
+    object-fit: cover;
+}
+
+.nos_menus_img--nomEtPrix {
+    padding-top: 2rem;
+}
+
+.nos_menus_img--nomEtPrix p {
+    margin: 0;
+    padding: 0.5rem;
+
+}
+
+
+
+/* tarif menu */
+.nos_menus_img p+p {
+    font-size: 1.7rem;
+    text-align: center;
+}
+
+
+
+
+
+
+/* ASIDE */
+
+aside {
+    width: 100%;
+    max-width: 450px;
+    background-color: #F1F1F1;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+aside p {
+    margin: 0;
+}
+
+.aside_top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo_wacdo {
+    margin: 40px auto 20px auto;
+}
+
+
+.commande_et_liste {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.commande_numero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 2px black;
+    padding: 3px 0 3px 0;
+}
+
+.numero {
+    font-size: 42px;
+}
+
+
+.ul_menus {
+    padding: 0;
+    margin: 10px 0 10px 0;
+}
+
+.liste_menu {
+    list-style: none;
+}
+
+
+.choix_menu_item {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail_menu {
+    list-style-type: disc;
+    padding-inline-start: 30px;
+    margin-bottom: 20px;
+}
+
+.trash {
+    border: none;
+    background-color: #F1F1F1;
+}
+
+
+
+/* ASIDE BOTTOM */
+
+.aside_bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 5px 0 5px 0;
+    margin: 20px;
+}
+
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0 5px 0;
+    border-top: solid 2px black;
+    padding-top: 5px;
+}
+
+.totalttc {
+    font-size: clamp(15px, 3vw, 24px);
+}
+
+.tarif {
+    font-size: clamp(20px, 3vw, 42px);
+}
+
+
+.abandon_payer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.abandon {
+    color: black;
+    background-color: transparent;
+    border: solid 2px;
+    border-radius: 8px;
+    padding: 16px 32px 16px 32px;
+    margin-right: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.payer {
+    border: none;
+    font-weight: bold;
+    background-color: #FFC836;
+    color: black;
+    border-radius: 8px;
+    padding: 16px 32px 16px 32px;
+    margin-left: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+/* MODALE MENU */
+
+.overlay_menu {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.322);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay_menu.active {
+    display: flex;
+}
+
+
+.modale_avec_croix {
+    width: 60%;
+    max-width: 1000px;
+    background-color: white;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+
+.croix {
+    width: 95%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 0.5rem 1rem 2rem 1rem;
+}
+
+
+
+
+
+/* === TEXTE + (LIENS et BOUTTON) --> 2 items === */
+.modale_sans_croix {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.modale_txt {
+    width: 95%;
+    font-size: 1.8rem;
+    font-weight: 700;
+    padding-left: 4.5rem;
+}
+
+.modale_txt p {
+    margin: auto;
+}
+
+.modale_txt p:first-child {
+    font-size: 2.6rem;
+    margin-bottom: 1rem;
+}
+
+
+/* === 2 LIENS + BOUTTON --> 2 items === */
+.modale_img_button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    flex: 1 1 100%
+}
+
+/* === les 2 liens === */
+.modale_images {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5rem;
+}
+
+/* === lien --> image + texte ("menu maxi best of") === */
+.modale_images button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    border: solid 4px #D6D6D6;
+    border-radius: 8px;
+    text-decoration: none;
+    color: black;
+    font-size: 2.4rem;
+    font-weight: 700;
+    padding: 1rem;
+    width: 40%;
+    background-color: white;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.image_menu {
+    width: 50%;
+}
+
+.modale_button {
+    color: black;
+    background-color: rgb(255, 200, 54);
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.6rem;
+    padding: 1.5rem 2.5rem;
+    margin-bottom: 2rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+
+
+
+
+/* MODALE FRITES */
+
+.overlay_frites {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.322);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay_frites.active {
+    display: flex;
+}
+
+.croix_fritesEtBoissons {
+    justify-content: space-between;
+}
+
+.modale_img_button_frites {
+    gap: 3rem;
+}
+
+.modale_images_frites {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5rem;
+
+}
+
+.frites {
+    width: 60%;
+    height: 75%;
+    object-fit: cover;
+}
+
+.sans_croix_frites {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    gap: 5rem;
+}
+
+.retour {
+    color: black;
+    background-color: white;
+    text-decoration: none;
+    border: solid 1.6px black;
+    border-radius: 8px;
+    padding: 1.5rem 3rem 1.5rem 3rem;
+    font-size: 1.5rem;
+}
+
+
+
+/* MODALE BOISSONS */
+
+.overlay_boissons {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.322);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay_boissons.active {
+    display: flex;
+}
+
+.sans_croix_boisson_slider {
+    gap: 3rem;
+}
+
+.slider_boisson_etBouton {
+    gap: 3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+
+.slider_boisson_avecFleches {
+    width: auto;
+    gap: 3rem;
+}
+
+.flechesSliderBoissons {
+    border: none;
+    background-color: white;
+    padding: 0;
+}
+
+
+.slider_boisson_avecFleches img {
+    width: auto;
+}
+
+.slider_boisson {
+    width: 80%;
+    height: auto;
+}
+
+.slider_boisson button {
+    width: auto;
+    height: auto;
+    font-size: 2rem;
+
+}
+
+.slider_boisson img {
+    padding-bottom: 2rem;
+}
+
+.txt_slider_boissons {
+    padding-left: 11rem;
+}
+
+.ajouterLeMenu {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: auto;
+}
+
+
+/* MODALE TAILLE BOISSON */
+
+.overlay_tailleBoisson {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.322);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay_tailleBoisson.active {
+    display: flex;
+}
+
+.tailleBoisson_counter {
+    width: 60%;
+}
+
+.sans_croix_tailleBoissons {
+    gap: 3rem;
+}
+
+.tailleBoisson_img_counter_bouton {
+    justify-content: center;
+    gap: 4rem;
+}
+
+.tailleBoisson {
+    width: 100%;
+}
+
+.tailleBoisson button {
+    justify-content: end;
+    width: 100%;
+    padding: 0  2.5rem 1.5rem 2.5rem;
+}
+
+.tailleBoisson30Cl_image {
+    object-fit: contain;
+    margin-bottom: 2rem;
+    width: 80%;
+    height: 50%;
+}
+
+.tailleBoisson50Cl_image {
+    object-fit: cover;
+    margin-bottom: 2rem;
+
+}
+
+
+
+
+.counter {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.counter button {
+    width: 30%;
+    color: black;
+    background-color: rgb(255, 200, 54);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 3.5rem;
+    padding: 1rem 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.counter p {
+    font-weight: 700;
+    font-size: 3rem;
+    text-align: center;
+    margin: auto;
+}
+
+
+
+.boutons_tailleBoisson {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.bouton_tailleBoisson_annuler {
+    color: black;
+    border: solid 2px black;
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+/* MODALE CONFIRMATION */
+
+.overlayConf {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.322);
+    justify-content: center;
+    align-items: center;
+}
+
+.confContainer {
+    width: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    padding: 3rem;
+    margin: 6rem;
+}
+
+.messageConf {
+    width: auto;
+    text-align: center;
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 700;
+    padding: 2rem;
+}
+
+.fermer {
+    color: black;
+    background-color: rgb(255, 200, 54);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: clamp(0rem, 8vw, 2rem);
+    padding: 1.5rem;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+.abandon:active,
+.payer:active,
+.trash:active,
+.nav_images_container button:active,
+.fleche_slider:active,
+.fleche_slider_reverse:active,
+.nos_menus_img button:active,
+.modale_button:active,
+.croix img:active,
+.retour:active,
+.counter button:active,
+.fermer:active {
+    scale: 0.9;
+}
+
+.nav_images_container button:focus,
+.nav_images_container button:hover,
+.nos_menus_img button:focus,
+.nos_menus_img button:hover {
+    outline: solid 5px rgb(255, 200, 54);
+    border: solid 1px rgba(255, 201, 54, 0);
+}
+
+
+.modale_images button:focus,
+.modale_images button:hover,
+.modalButtonMenu1.active,
+.modalButtonMenu2.active,
+.modalButtonfrites1.active,
+.modalButtonfrites2.active,
+.tailleBoisson1.active,
+.tailleBoisson2.active {
+    outline: solid 7px rgb(255, 200, 54);
+    border: solid 4px rgba(255, 201, 54, 0);
+    transform: scale(1.1); 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.1);
+}
+
+.modale_images button:active {
+    transform: scale(1);
+}
+
+
+/*  RESPONSIVE */
+
+@media screen and (max-width: 1200px) {
+    .modale_avec_croix {
+        height: auto;
+    }
+
+    .modale_images button:focus,
+    .modale_images button:hover {
+        outline: solid 4px rgb(255, 200, 54);
+        border: solid 1px rgba(255, 201, 54, 0);
+    }
+
+    .nos_menus_img button {
+        width: 30%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .nos_menus_img button {
+        width: 28%;
+    }
+
+    .boutons_tailleBoisson {
+        justify-content: center;
+    }
+
+    .slider_boisson_avecFleches {
+        width: 90%;
+    }
+
+
+    .sans_croix_boisson_slider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modale_avec_croix_boisson {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .txt_slider_boissons {
+        padding: 0;
+        text-align: center;
+    }
+
+    .modale_images button:focus,
+    .modale_images button:hover,
+    .modale_images button:active,
+    .modalButtonMenu1.active,
+    .modalButtonMenu2.active,
+    .modalButtonfrites1.active,
+    .modalButtonfrites2.active,
+    .tailleBoisson1.active,
+    .tailleBoisson2.active {
+        transform: scale(1);
+        outline: solid 4px rgb(255, 200, 54);
+        border: solid 4px rgba(255, 201, 54, 0);
+
+    }
+}
+
+
+
+
+@media screen and (max-width: 900px) {
+
+    .nos_menus_img {
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+
+
+    main {
+        margin: auto;
+    }
+
+    .nos_menus_txt {
+        margin: 1.5rem;
+        text-align: center;
+    }
+
+    .modale_images button {
+        height: auto;
+    }
+}
+
+@media (max-width: 800px) {
+    .aside_top, .aside_bottom {
+        font-size: 12px;
+    }
+
+    .numero {
+        font-size: 25px;
+    }
+
+    .sliderEtMenu {
+        min-width: 170px ;
+    }
+
+    .nav_images_container {
+        width: 500px;
+    }
+
+    .slider_boisson {
+        width: 45%;
+    }
+
+
+    .nos_menus_img button {
+        width: 40%;
+    }
+
+
+    .modale_sans_croix {
+        gap: 2rem;
+    }
+
+    .modale_txt {
+        padding: 0;
+        text-align: center;
+    }
+
+    .modale_images button {
+        text-align: center;
+        justify-content: space-evenly;
+    }
+
+    .modale_img_button {
+        gap: 2rem;
+    }
+
+    .modale_button {
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+
+    .croix {
+        margin-bottom: auto;
+    }
+
+    .modale_avec_croix_boisson {
+        gap: 2rem;
+        min-width: 260px;
+    }
+
+    .modale_avec_croix_frite{
+        gap: 1rem;
+    }
+
+    .sans_croix_frites, .modale_img_button_frites {
+        gap: 1rem;
+    }
+
+
+    .retour {
+    padding: 1rem 1.5rem;
+    }
+
+}
+
+
+
+@media screen and (max-width: 600px) {
+    html {
+        font-size: 8px;
+    }
+
+    .modale_avec_croix {
+        width: 70%;
+        height: auto;
+    }
+
+    .modale_avec_croix_boisson {
+        gap: 2rem;
+    }
+
+    .sans_croix_boisson_slider {
+        gap: 1.5rem;
+    }
+
+    .croix {
+        height: 12%;
+    }
+
+
+    .modale_images button {
+        text-align: center;
+        justify-content: space-evenly;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+
+    .sans_croix_frites {
+        width: 100%;
+    }
+
+    .retour {
+        padding: 1rem 2rem;
+    }
+
+    .nav_images_container, .slider_boisson {
+        width: 120px;
+        flex: 0 0 auto;
+        /* 1 item visible */
+    }
+
+    .nav_images_container button {
+        padding: 0;
+    }
+
+    .fleche_slider_reverse,
+    .fleche_slider {
+        width: 30px;
+    }
+
+    .slider_boisson a {
+        width: 100%;
+    }
+
+
+    .boutons_tailleBoisson {
+    width: 80%;
+    height: 12%;
+    }
+
+
+    .nos_menus_img {
+        justify-content: center;
+    }
+
+    .nos_menus_img button {
+        width: 80%;
+    }
+
+    .nos_menus_img--nomEtPrix {
+        font-size: 2.5rem;
+    }
+
+    .nos_menus_img--nomEtPrix p+p {
+        font-size: 2rem;
+    }
+
+    .payer,
+    .abandon {
+        padding: 10px;
+    }
+    
+    .commande_numero {
+        gap: 1px;
+    }
+
+    .trash img {
+        min-width: 22px;
+
+    }
+}
+
+@media (max-width: 500px) {
+    .modale_txt_frites {
+        text-align: center;
+    }
+
+    .image_menu {
+        width: auto;
+    }
+
+    .slider_boisson_avecFleches {
+        gap: 0.5rem;
+    }
+}
+
+
+
+@media (max-width: 400px) {
+    .modale_images {
+        gap: 20px
+    }
+
+    .modale_images button {
+        font-size: 17px;
+    }
+
+    .nos_menus_img--nomEtPrix {
+        padding: 0 0.5rem 0.5rem 0.5rem;
+    }
+
+    .boutons_tailleBoisson {
+    gap: 0.5rem;
+    }
+
+
+    .sliderEtMenu {
+        padding: 1.5rem;
+    }
+
+    .nos_menus_img {
+        padding: 0;
+    }
+
+    .nos_menus_img button {
+        width: 100%;
+        padding: 0;
+    }
+
+    .aside_bottom {
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .commande_et_liste {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .abandon, .payer {
+        margin: auto;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .abandon_payer {
+        gap: 3px;
+    }
+
+    .trash img {
+        width: 10px;
+    }
+}
+
+
+@media screen and (max-width: 325px) {
+    .modale_avec_croix {
+        height: auto;
+    }
+
+    .modale_avec_croix_boisson {
+        height: auto;
+    }
+
+    .modale_images button {
+    font-size: 14px;
+    }
+
+}
+
+
+
+
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+
+    html {
+        font-size: 7px;
+    }
+    
+    .modale_avec_croix {
+        max-width: 750px;
+        gap: 0.5rem;
+    }
+
+    .modale_sans_croix, .modale_img_button {
+        gap: 1rem;
+    }
+
+    .modale_button{
+        margin-bottom: 1rem;
+    }
+
+    .croix {
+        margin: 0;
+    }
+
+    .modale_avec_croix_boisson {
+        gap: 0.5rem;
+    }
+
+    .sans_croix_tailleBoissons {
+        gap: 0.5rem;
+    }
+
+    .tailleBoisson button {
+        width: 30%;
+    }
+
+
+
+
+    .slider_boisson_etBouton {
+        gap: 0.5rem;
+    }
+
+    .slider_boisson button {
+        height: 30%;
+    }
+}
+
+@media screen and (max-width: 800px) and (orientation: landscape) {
+    .tailleBoisson {
+        font-size: 6px;
+    }
+
+    .tailleBoisson_img_counter_bouton {
+        gap: 2rem;
+    }
+}

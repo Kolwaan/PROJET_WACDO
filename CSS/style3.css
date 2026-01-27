@@ -1,0 +1,241 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+/**** CHEVALET ****/
+
+.first_container {
+    width: 40%;
+    height: auto;
+    position: absolute;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    /* margin: 2.5rem; */
+}
+
+.first_container img {
+    width: 20%;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    opacity: 1;
+}
+
+.chevalet_container {
+    width: 100%;
+    height: auto;
+    background-color: white; 
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.chevalet_container h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 1rem;
+}
+
+.chevalet_container p {
+    font-size: 2rem;
+    font-weight: 800;
+    padding: 1rem;
+}
+
+
+
+.formulaire {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    /* margin: 2rem; */
+}
+
+.formulaire input {
+    border: none;
+    border-bottom: solid 13px rgb(217, 217, 217);
+    font-family: "Roboto", sans-serif;
+    font-size: 8rem;
+    font-weight: 800;
+    text-align: center;
+    margin: 1rem;
+}
+
+.boutton {
+    width: auto;
+    background-color: rgb(255, 200, 54);
+    border: none;
+    border-radius: 10px;
+    font-family: "Roboto", sans-serif;
+    color: black;
+    text-decoration: none;
+    font-size: 3rem;
+    font-weight: 700;
+    padding: 2rem 3rem; 
+}
+
+.boutton:active {
+    scale: 0.9;
+}
+
+
+.label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* BREAKPOINT 1 */
+@media screen and (max-width: 1000px) {
+    .first_container {
+        width: 60%;
+        height: auto;
+        justify-content: center;
+    }
+
+    .first_container img, .chevalet_container, .boutton {
+        height: auto;
+    }
+}
+
+
+/* BREAKPOINT 4 */
+@media screen and (max-width: 700px) {
+    .first_container {
+        width: 90%;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .chevalet_container {
+        width: 80%;
+        height: auto;
+        justify-content: center;
+    }
+        
+    
+    .formulaire input {
+        font-size: 4rem;
+        border-bottom: solid 7px rgb(217, 217, 217);
+        margin: 0.5rem;
+    }
+
+    .boutton {
+        height: auto;
+        font-size: 2rem;
+    }
+}
+
+
+@media screen and (max-width:550px) {
+    html {
+        font-size: 8px;
+    }
+
+    .chevalet_container {
+        height: 50%;
+    }
+}
+
+@media screen and (max-width:450px) {
+    .chevalet_container {
+        align-items: center;
+
+    }
+
+    .chevalet_container h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: auto;
+}
+
+.chevalet_container p {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+
+    .formulaire input {
+        font-size: 4rem;
+    }
+}
+
+@media screen and (max-width: 1200px) and (orientation: landscape) {
+        html {
+        font-size: 9px; /* On réduit un peu pour rentrer plus de contenu */
+    }
+
+        .first_container {
+        width: 50%;
+        height: auto; 
+        margin: 2rem auto;
+    }
+
+        .chevalet_container {
+        height: auto; 
+        padding: 2rem;
+        margin: 1rem;
+    }
+
+    .chevalet_container h1, .chevalet_container p {
+        margin: auto;
+    }
+
+    .formulaire input {
+        font-size: 4rem;
+    }
+
+    .boutton {
+        padding: 1.5rem 2rem;
+    }
+}
+
+
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+    html {
+        font-size: 8px; /* On réduit un peu pour rentrer plus de contenu */
+    }
+
+    .first_container {
+        width: 60%;
+        height: auto; 
+        margin: 2rem auto;
+    }
+
+    .chevalet_container {
+        height: auto; 
+        padding: 2rem;
+        margin: 1rem;
+    }
+
+    .chevalet_container h1, .chevalet_container p {
+        margin: auto;
+    }
+
+    .formulaire input {
+        font-size: 4rem;
+    }
+
+    .boutton {
+        padding: 1.5rem 2rem;
+    }
+}

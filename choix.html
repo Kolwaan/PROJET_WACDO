@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+    <title>Choix</title>
+    <link rel="stylesheet" href="CSS/style2.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <script src="JS/main.js" defer></script>
+    <script src="JS/slider.js" defer></script>
+    <script src="JS/api.js" defer></script>
+
+</head>
+
+<body>
+
+    <div class="sliderEtMenu">
+        <nav class="slider">
+            <button class="fleches"><img class="fleche_slider" src="ASSETS/images/fleche-slider.png" alt="Faire défiler à gauche"></button>
+            <div class="nav_images_container">
+
+            </div>
+            <button class="fleches"><img class="fleche_slider_reverse" src="ASSETS/images/fleche-slider.png" alt="Faire défiler à droite"></button>
+        </nav>
+
+        <main>
+            <div class="nos_menus_txt">
+                <h1>Nos menus</h1>
+                <p>Un sandwich, une friture ou une salade et une boisson </p>
+            </div>
+            <div class="nos_menus_img">
+
+            </div>
+        </main>
+    </div>
+
+
+    <aside>
+        <div class="aside_top">
+            <img class="logo_wacdo" src="ASSETS/images/logo.png" alt="Logo Wacdo">
+
+            <div class="commande_et_liste">
+
+                <div class="commande_numero">
+                    <div>
+                        <p>Commande numéro</p>
+                        <p></p>
+                    </div>
+                    <p class="numero"></p>
+                </div>
+
+                <ul class="ul_menus">
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="aside_bottom">
+            <div class="total">
+                <div class="totalttc">
+                    <p>TOTAL</p>
+                    <p>(ttc)</p>
+                </div>
+                <div class="tarif">0 €</div>
+            </div>
+
+            <div class="abandon_payer">
+                <input class="abandon" id="abandon" name="abandon" type="submit" value="Abandon">
+
+                <input class="payer" id="payer" name="payer" type="submit" value="Payer">
+            </div>
+        </div>
+    </aside>
+
+
+
+        <!-- MODALE MENU -->
+    <div class="overlay_menu">
+        <div class="modale_avec_croix">
+            <div class="croix"><img src="ASSETS/images/supprimer.png" alt="fermer">
+            </div>
+
+            <div class="modale_sans_croix">
+                <div class="modale_txt">
+                    <p>Une grosse faim ?</p>
+                    <p>
+                        Le menu maxi Best Of comprend un sandwich, une grande frite et une boisson
+                        50 Cl
+                    </p>
+                </div>
+                <div class="modale_img_button">
+                    <div class="modale_images">
+                        <button class="modalButtonMenu1"><img class="image_menu" src="ASSETS/images/illustration-maxi-best-of.png"
+                                alt="menu maxi best of">Menu Maxi Best Of</button>
+                        <button class="modalButtonMenu2"><img class="image_menu" src="ASSETS/images/illustration-best-of.png"
+                                alt="menu best of">Menu Best Of</button>
+                    </div>
+                    <input class="modale_button modale_button1" type="submit" name="etape_suivante_menu" id="etape_suivante_menu"
+                        value="Étape Suivante">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODALE FRITES -->
+    <div class="overlay_frites">
+        <div class="modale_avec_croix modale_avec_croix_frite">
+            <div class="croix croix_fritesEtBoissons">
+                <button class="retour retour1">Retour</button>
+                <img src="ASSETS/images/supprimer.png" alt="fermer">
+            </div>
+
+            <div class="modale_sans_croix sans_croix_frites">
+                <div class="modale_txt modale_txt_frites">
+                    <p>Choisissez votre accompagnement</p>
+                    <p>
+                        Frites, potatoes, la pomme de terre dans tous ses états
+                    </p>
+                </div>
+                <div class="modale_img_button modale_img_button_frites">
+                    <div class="modale_images modale_images_frites">
+                        <button class="modalButtonfrites1"><img class="frites" src="ASSETS/frites/MOYENNE_FRITE.png" alt="frites">Frites</button>
+                        <button class="modalButtonfrites2"><img class="frites" src="ASSETS/frites/GRANDE_POTATOES.png"
+                                alt="potatoes">Potatoes</button>
+                    </div>
+                    <input class="modale_button modale_button2" type="submit" name="etape_suivante_frite" id="etape_suivante_frite"
+                        value="Étape Suivante">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- MODALE BOISSONS (Slider) -->
+    <div class="overlay_boissons">
+        <div class="modale_avec_croix modale_avec_croix_boisson">
+            <div class="croix croix_fritesEtBoissons">
+                <button class="retour retour2">Retour</button>
+                <img src="ASSETS/images/supprimer.png" alt="fermer">
+            </div>
+
+            <div class="modale_sans_croix sans_croix_frites sans_croix_boisson_slider">
+                <div class="modale_txt txt_slider_boissons">
+                    <p>Choisissez votre boisson</p>
+                    <p>
+                        Un soda, un jus de fruit ou un verre d’eau pour accompagner votre repas
+                    </p>
+                </div>
+                <div class="modale_img_button slider_boisson_etBouton">
+                    <div class="slider slider_boisson_avecFleches">
+                        <button class="flechesSliderBoissons"><img class="fleche_slider" src="ASSETS/images/fleche-slider.png" alt="Faire défiler à gauche"></button>
+
+                        <div class="nav_images_container slider_boisson">
+
+                        </div>
+
+                        <button class="flechesSliderBoissons"><img class="fleche_slider_reverse" src="ASSETS/images/fleche-slider.png" alt="Faire défiler à droite"></button>
+                    </div>
+
+                    <input class="modale_button ajouterLeMenu" type="submit" name="ajouterLeMenu" id="AjouterLeMenu" value="Ajouter le menu à ma commande">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- MODALE TAILLE BOISSON -->
+    <div class="overlay_tailleBoisson">
+        <div class="modale_avec_croix tailleBoisson_counter">
+            <div class="croix">
+                <img src="ASSETS/images/supprimer.png" alt="fermer">
+            </div>
+
+            <div class="modale_sans_croix sans_croix_frites sans_croix_tailleBoissons">
+                <div class="modale_txt">
+                    <p>Une petite soif ?</p>
+                    <p>
+                        Choisissez la taille de votre boisson, + 0.50 € pour le format 50 Cl
+                    </p>
+                </div>
+                <div class="modale_img_button tailleBoisson_img_counter_bouton">
+                    <div class="modale_images tailleBoisson">
+                        <button class="tailleBoisson1"><img class="frites tailleBoisson30Cl_image" src="ASSETS/boissons/coca-cola.png" alt="Choix taille boisson 30 Cl">30 Cl</button>
+                        <button class="tailleBoisson2"><img class="frites tailleBoisson50Cl_image" src="ASSETS/boissons/coca-cola.png"
+                                alt="Choix taille boisson 50 Cl">50 Cl</button>
+                    </div>
+
+                    <div class="counter">
+                        <button class="moins">-</button>
+                        <p class="nbBoissons">1</p>
+                        <button class="plus">+</button>
+                    </div>
+
+                    <div class="boutons_tailleBoisson">
+                        <input class="modale_button bouton_tailleBoisson_annuler" type="submit" name="annulerTailleBoisson" id="annulerTailleBoisson"
+                            value="Annuler">
+                        <input class="modale_button bouton_tailleBoisson_ajouter" type="submit" name="ajouterTailleBoisson" id="ajouterTailleBoisson"
+                            value="Ajouter à ma commande">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODALE CONFIRMATION -->
+     <div class="overlayConf hidden">
+        <div class="confContainer">
+            <p class="messageConf"></p>
+            <button class="fermer">Fermer</button>
+        </div>
+     </div>
+
+
+</body>
+
+</html>
