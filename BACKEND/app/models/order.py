@@ -19,3 +19,16 @@ class Order(Base):
     preparateur = relationship("User")
     produits = relationship("Product", secondary="order_products")
     menus = relationship("Menu", secondary="order_menus")
+    
+    def total_ttc(self, tva_rate=0.20):
+        total_ht = 0
+        
+        # Somme des produits
+        for product in self.produits:
+            total_ht += float(product.prixHT)
+        
+        # Somme des menus
+        for menu in self.menus:
+            total_ht += float(menu.prixHT)
+        
+        return total_ht * (1 + tva_rate)

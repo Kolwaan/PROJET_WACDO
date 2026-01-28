@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Numeric, Boolean
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, Enum, ARRAY
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.enums.menu_type import MenuType
 
 class Menu(Base):
     __tablename__ = "menus"
@@ -17,3 +18,5 @@ class Menu(Base):
         secondary="menu_products",
         back_populates="menus"
     )
+    
+    menu_type = Column(Enum(MenuType))
