@@ -9,8 +9,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Backend FastAPI Wacdo",
-    description="API de gestion pour l'application WACDO",
-    version="1.0.0"
+    description="API de gestion pour l'application WACDO"
 )
 
 # Configuration CORS
@@ -33,18 +32,10 @@ app.include_router(order_routes.router)
 def root():
     return {
         "message": "API WACDO en ligne",
-        "version": "1.0.0",
         "endpoints": {
             "users": "/users",
             "products": "/products",
             "menus": "/menus",
             "orders": "/orders",
-            "docs": "/docs"
         }
     }
-
-
-@app.get("/health")
-def health_check():
-    """Endpoint de santé pour vérifier que l'API fonctionne"""
-    return {"status": "healthy"}
