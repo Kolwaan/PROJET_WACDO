@@ -2,12 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserUpdate, UserResponse
 from app.controllers.user_controller import (
     create_user,
     get_all_users,
     get_user_by_id,
-    delete_user
+    delete_user,
+    update_user
 )
 
 
@@ -51,6 +52,18 @@ def read_users(db: Session = Depends(get_db)):
 @router.get("/{user_id}", response_model=UserResponse)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     user = get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return user
+
+
+@router.put("/{user_id}", response_model=UserResponse)
+def update_user_route(
+    user_id: int,
+    user_data: UserUpdate,
+    db: Session = Depends(get_db)
+):
+    user = update_user(db, user_id, user_data)
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return user

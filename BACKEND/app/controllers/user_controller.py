@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserUpdate
 from app.enums.role import RoleEnum
-
 
 
 def create_user(db: Session, user_data: UserCreate) -> User:
@@ -11,7 +10,7 @@ def create_user(db: Session, user_data: UserCreate) -> User:
         raise ValueError("Email déjà utilisé")
 
     user = User(
-        name=user_data.name,
+        nom=user_data.nom,
         email=user_data.email,
         password=user_data.password,
         role=user_data.role or RoleEnum.AGENT_ACCUEIL
@@ -42,7 +41,7 @@ def delete_user(db: Session, user_id: int) -> bool:
     return True
 
 # Mettre à jour un utilisateur
-def update_user(db: Session, user_id: int, user_data) -> User | None:
+def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None:
     user = get_user_by_id(db, user_id)
 
     if not user:

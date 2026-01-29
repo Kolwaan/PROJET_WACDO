@@ -1,13 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="backend FastAPI Wacdo")
+from app.routes import user_routes, product_routes, menu_routes, order_routes
+from app.database import Base, engine
 
-@app.get("/")
-def root():
-    return {"message": "API en ligne OK"}
+# Créer les tables dans la base de données
+Base.metadata.create_all(bind=engine)
 
+app = FastAPI(
+    title="Backend FastAPI Wacdo",
+    description="API de gestion pour l'application WACDO",
+    version="1.0.0"
+)
 
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,3 +22,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Enregistrement des routes
+app.include_router(user_routes.router)
+app.include_router(product_routes.router)
+app.include_router(menu_routes.router)
+app.include_router(order_routes.router)
+
+
+@app.get("/")
+def root():
+    return {
+        "message": "API WACDO en ligne",
+        "version": "1.0.0",
+        "endpoints": {
+            "users": "/users",
+            "products": "/products",
+            "menus": "/menus",
+            "orders": "/orders",
+            "docs": "/docs"
+        }
+    }
+
+
+@app.get("/health")
+def health_check():
+    """Endpoint de santé pour vérifier que l'API fonctionne"""
+    return {"status": "healthy"}

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, Enum, ARRAY
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, Enum, JSON
 from sqlalchemy.orm import relationship
 from app.database import Base
 from app.enums.type import ProductType
@@ -11,7 +11,7 @@ class Product(Base):
     description = Column(String)
     prixHT = Column(Numeric(10, 2))
     image = Column(String)
-    options = Column(ARRAY(String))
+    options = Column(JSON)
     disponibilite = Column(Boolean, default=True)
     type = Column(Enum(ProductType), nullable=False)
 
