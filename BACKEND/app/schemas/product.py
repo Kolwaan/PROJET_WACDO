@@ -1,30 +1,33 @@
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, Field
 from app.enums.type import ProductType
+
 
 class ProductBase(BaseModel):
     nom: str
-    description: Optional[str] = None
+    description: str | None = None
     prixHT: float
-    image: Optional[str] = None
-    options: Optional[List[str]] = []
+    image: str | None = None
+    options: list[str] | None = Field(default_factory=list)
     disponibilite: bool = True
     type: ProductType
+
 
 class ProductCreate(ProductBase):
     pass
 
+
 class ProductUpdate(BaseModel):
-    nom: Optional[str] = None
-    description: Optional[str] = None
-    prixHT: Optional[float] = None
-    image: Optional[str] = None
-    options: Optional[List[str]] = None
-    disponibilite: Optional[bool] = None
-    type: Optional[ProductType] = None
+    nom: str | None = None
+    description: str | None = None
+    prixHT: float | None = None
+    image: str | None = None
+    options: list[str] | None = None
+    disponibilite: bool | None = None
+    type: ProductType | None = None
+
 
 class ProductResponse(ProductBase):
     id: int
-    
+
     class Config:
         from_attributes = True

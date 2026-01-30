@@ -1,33 +1,38 @@
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, Field
 from app.enums.menu_type import MenuType
+
 
 class MenuBase(BaseModel):
     nom: str
-    description: Optional[str] = None
+    description: str | None = None
     prixHT: float
-    image: Optional[str] = None
+    image: str | None = None
     disponibilite: bool = True
-    menu_type: Optional[MenuType] = None
+    menu_type: MenuType | None = None
+
 
 class MenuCreate(MenuBase):
-    product_ids: Optional[List[int]] = []  # IDs des produits à associer
+    product_ids: list[int] | None = Field(default_factory=list)
+    # ID des produits à associer
+
 
 class MenuUpdate(BaseModel):
-    nom: Optional[str] = None
-    description: Optional[str] = None
-    prixHT: Optional[float] = None
-    image: Optional[str] = None
-    disponibilite: Optional[bool] = None
-    menu_type: Optional[MenuType] = None
-    product_ids: Optional[List[int]] = None
+    nom: str | None = None
+    description: str | None = None
+    prixHT: float | None = None
+    image: str | None = None
+    disponibilite: bool | None = None
+    menu_type: MenuType | None = None
+    product_ids: list[int] | None = None
+
 
 class MenuResponse(MenuBase):
     id: int
-    
+
     class Config:
         from_attributes = True
 
+
 class MenuWithProductsResponse(MenuResponse):
     """Menu avec les produits inclus"""
-    produits: List[dict] = []
+    produits: list[dict] = Field(default_factory=list)
