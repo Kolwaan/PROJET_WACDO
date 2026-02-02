@@ -13,7 +13,7 @@ class MenuBase(BaseModel):
 
 class MenuCreate(MenuBase):
     product_ids: list[int] | None = Field(default_factory=list)
-    # ID des produits à associer
+    # ID des produits à associer lors de la création
 
 
 class MenuUpdate(BaseModel):
@@ -33,6 +33,24 @@ class MenuResponse(MenuBase):
         from_attributes = True
 
 
-class MenuWithProductsResponse(MenuResponse):
-    """Menu avec les produits inclus"""
-    produits: list[dict] = Field(default_factory=list)
+# Schéma pour les produits dans la réponse
+class ProductInMenu(BaseModel):
+    id: int
+    nom: str
+    description: str | None = None
+    prixHT: float
+    image: str | None = None
+    disponibilite: bool
+    type: str  # ProductType as string
+
+    class Config:
+        from_attributes = True
+
+
+class MenuWithProductsResponse(MenuBase):
+    """Menu avec la liste complète des produits inclus"""
+    id: int
+    produits: list[ProductInMenu] = Field(default_factory=list)
+
+    class Config:
+        from_attributes = True

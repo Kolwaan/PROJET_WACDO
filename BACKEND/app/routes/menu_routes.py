@@ -72,6 +72,15 @@ def read_menu(menu_id: int, db: Session = Depends(get_db)):
     return menu
 
 
+@router.get("/{menu_id}/with-products", response_model=MenuWithProductsResponse)
+def read_menu_with_products(menu_id: int, db: Session = Depends(get_db)):
+    """Récupérer un menu avec ses produits associés"""
+    menu = get_menu_by_id(db, menu_id)
+    if not menu:
+        raise HTTPException(status_code=404, detail="Menu non trouvé")
+    return menu
+
+
 @router.put("/{menu_id}", response_model=MenuResponse)
 def update_menu_route(
     menu_id: int,
@@ -97,7 +106,7 @@ def toggle_menu_availability(
     return menu
 
 
-@router.post("/{menu_id}/products", response_model=MenuResponse)
+@router.post("/{menu_id}/products", response_model=MenuWithProductsResponse)
 def add_products_route(
     menu_id: int,
     product_ids: List[int],
@@ -110,7 +119,7 @@ def add_products_route(
     return menu
 
 
-@router.delete("/{menu_id}/products", response_model=MenuResponse)
+@router.delete("/{menu_id}/products", response_model=MenuWithProductsResponse)
 def remove_products_route(
     menu_id: int,
     product_ids: List[int],
