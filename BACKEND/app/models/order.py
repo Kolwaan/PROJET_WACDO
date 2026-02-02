@@ -20,7 +20,9 @@ class Order(Base):
     produits = relationship("Product", secondary="order_products")
     menus = relationship("Menu", secondary="order_menus")
     
-    def total_ttc(self, tva_rate=0.20):
+    @property
+    def total_ttc(self):
+        """Calculer le total TTC de la commande (avec TVA 20%)"""
         total_ht = 0
         
         # Somme des produits
@@ -31,4 +33,4 @@ class Order(Base):
         for menu in self.menus:
             total_ht += float(menu.prixHT)
         
-        return total_ht * (1 + tva_rate)
+        return round(total_ht * 1.20, 2)  # TVA 20%
