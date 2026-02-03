@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
 from app.enums.role import RoleEnum
+from app.utils.hash import hash_password
 
 
 def create_user(db: Session, user_data: UserCreate) -> User:
@@ -9,10 +10,13 @@ def create_user(db: Session, user_data: UserCreate) -> User:
     if existing_user:
         raise ValueError("Email déjà utilisé")
 
+    # Hacher le mot de passe avant de le stocker
+    hashed_password = hash_password(user_data.password)
+
     user = User(
         nom=user_data.nom,
         email=user_data.email,
-        password=user_data.password,
+        password=hashed_password,  # ✅ Stockage du mot de passe haché
         role=user_data.role or RoleEnum.AGENT_ACCUEIL
     )
 
@@ -47,7 +51,12 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None
     if not user:
         return None
 
-    for field, value in user_data.dict(exclude_unset=True).items():
+    # Hacher le nouveau mot de passe si fourni
+    update_data = user_data.dict(exclude_unset=True)
+    if "password" in update_data and update_data["password"]:
+        update_data["password"] = hash_password(update_data["password"])
+
+    for field, value in update_data.items():
         setattr(user, field, value)
 
     db.commit()

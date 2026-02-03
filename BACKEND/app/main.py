@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import user_routes, product_routes, menu_routes, order_routes
+from app.routes import user_routes, product_routes, menu_routes, order_routes, auth_routes
 from app.database import Base, engine
 
 # Créer les tables dans la base de données
@@ -22,6 +22,7 @@ app.add_middleware(
 )
 
 # Enregistrement des routes
+app.include_router(auth_routes.router)  # ✅ Routes d'authentification
 app.include_router(user_routes.router)
 app.include_router(product_routes.router)
 app.include_router(menu_routes.router)
@@ -33,6 +34,7 @@ def root():
     return {
         "message": "API WACDO en ligne",
         "endpoints": {
+            "auth": "/auth",
             "users": "/users",
             "products": "/products",
             "menus": "/menus",
