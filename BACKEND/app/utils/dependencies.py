@@ -1,29 +1,3 @@
-"""
-Module des dépendances FastAPI pour les routes protégées.
-
-Ce module contient les fonctions utilisées comme dépendances dans les routes
-pour gérer l'authentification et les autorisations.
-
-Dépendances disponibles :
-- get_current_user : Récupère l'utilisateur du token JWT
-- require_role : Vérifie que l'utilisateur a un rôle spécifique
-- authenticate_user : Authentifie un utilisateur avec email/password
-
-Usage :
-    from app.utils.dependencies import get_current_user, require_role
-    from app.enums.role import RoleEnum
-    
-    # Route protégée (authentification requise)
-    @router.get("/protected")
-    def protected_route(current_user: dict = Depends(get_current_user)):
-        return {"user": current_user["email"]}
-    
-    # Route admin uniquement
-    @router.get("/admin", dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))])
-    def admin_route():
-        return {"message": "Admin only"}
-"""
-
 from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -34,54 +8,13 @@ from app.utils.hash import verify_password
 from app.models.user import User
 from app.enums.role import RoleEnum
 
-
-# Configuration OAuth2
-# ⚠️ IMPORTANT : tokenUrl doit pointer vers la route OAuth2 standard
-# qui utilise OAuth2PasswordRequestForm (format formulaire)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth_routes/token")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
-    """
-    Récupère l'utilisateur actuel à partir du token JWT.
     
-    Cette fonction est utilisée comme dépendance dans les routes protégées.
-    Elle :
-    1. Récupère le token depuis l'en-tête Authorization
-    2. Décode et valide le token
-    3. Extrait les informations de l'utilisateur
-    4. Retourne les informations (email, role, user_id)
-    
-    Args:
-        token: Token JWT extrait automatiquement de l'en-tête
-               "Authorization: Bearer <token>"
-               
-    Returns:
-        Dictionnaire contenant :
-        - email : Email de l'utilisateur
-        - role : Rôle de l'utilisateur
-        - user_id : ID en base de données
-    
-    Raises:
-        HTTPException(401): Si le token est invalide ou expiré
-        HTTPException(401): Si les données du token sont incomplètes
         
-    Example:
-        ```python
-        @router.get("/profile")
-        def get_profile(current_user: dict = Depends(get_current_user)):
-            return {
-                "email": current_user["email"],
-                "role": current_user["role"],
-                "user_id": current_user["user_id"]
-            }
-        ```
-        
-    Note:
-        - Le token est automatiquement extrait de l'en-tête HTTP
-        - Si le token est absent, FastAPI retourne 401 automatiquement
-        - Si le token est invalide, decode_access_token lève une exception
-    """
+ 
     # Décode et valide le token
     payload = decode_access_token(token)
     
