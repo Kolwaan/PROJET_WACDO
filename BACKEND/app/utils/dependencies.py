@@ -8,7 +8,7 @@ from app.utils.hash import verify_password
 from app.models.user import User
 from app.enums.role import RoleEnum
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth_routes/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
