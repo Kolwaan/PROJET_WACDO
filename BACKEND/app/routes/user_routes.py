@@ -35,7 +35,9 @@ def get_db():
 @router.post(
     "/register",
     response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+
 )
 def register_user(
     user: UserCreate,
@@ -43,7 +45,7 @@ def register_user(
 ):
     """
     Inscription d'un nouvel utilisateur.
-    Cette route est publique pour permettre l'inscription.
+    Cette route est réservée à l'admin.
     """
     try:
         return create_user(db, user)
