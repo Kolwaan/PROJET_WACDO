@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 # Enregistrement des routes
-app.include_router(auth_routes.router)  # ✅ Routes d'authentification
+app.include_router(auth_routes.router)  # Routes d'authentification
 app.include_router(user_routes.router)
 app.include_router(product_routes.router)
 app.include_router(menu_routes.router)
