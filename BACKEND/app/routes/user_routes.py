@@ -29,7 +29,7 @@ def get_db():
 
 
 # ========================================
-# ROUTES PUBLIQUES (sans authentification)
+# ROUTES ADMINISTRATEUR UNIQUEMENT
 # ========================================
 
 @router.post(
@@ -56,50 +56,6 @@ def register_user(
         )
 
 
-# ========================================
-# ROUTES PROTÉGÉES (nécessitent une authentification)
-# ========================================
-
-@router.get(
-    "/me",
-    response_model=UserResponse,
-    summary="Récupérer son propre profil"
-)
-def get_my_profile(
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Récupère les informations du profil de l'utilisateur connecté.
-    """
-    user = get_user_by_id(db, current_user["user_id"])
-    if not user:
-        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-    return user
-
-
-@router.put(
-    "/me",
-    response_model=UserResponse,
-    summary="Mettre à jour son propre profil"
-)
-def update_my_profile(
-    user_data: UserUpdate,
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Met à jour les informations du profil de l'utilisateur connecté.
-    """
-    user = update_user(db, current_user["user_id"], user_data)
-    if not user:
-        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-    return user
-
-
-# ========================================
-# ROUTES ADMINISTRATEUR UNIQUEMENT
-# ========================================
 
 @router.get(
     "/",
@@ -163,3 +119,45 @@ def delete_user_route(user_id: int, db: Session = Depends(get_db)):
     success = delete_user(db, user_id)
     if not success:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+
+# ========================================
+# ROUTES PUBLIQUES
+# ========================================
+
+
+@router.get(
+    "/me",
+    response_model=UserResponse,
+    summary="Récupérer son propre profil"
+)
+def get_my_profile(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Récupère les informations du profil de l'utilisateur connecté.
+    """
+    user = get_user_by_id(db, current_user["user_id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return user
+
+
+@router.put(
+    "/me",
+    response_model=UserResponse,
+    summary="Mettre à jour son propre profil"
+)
+def update_my_profile(
+    user_data: UserUpdate,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Met à jour les informations du profil de l'utilisateur connecté.
+    """
+    user = update_user(db, current_user["user_id"], user_data)
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return user
