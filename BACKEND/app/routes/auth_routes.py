@@ -22,7 +22,7 @@ def get_db():
 
 
 # ========================================
-# ROUTE 1 : Login JSON (pour votre app)
+# ROUTE 1 : Login JSON (pour l'app Wacdo)
 # ========================================
 @router.post("/login", response_model=TokenResponse)
 def login(
