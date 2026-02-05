@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from app.enums.menu_type import MenuType
+
 
 
 class MenuBase(BaseModel):
@@ -27,14 +28,13 @@ class MenuUpdate(BaseModel):
 
 
 class MenuResponse(MenuBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 # Schéma pour les produits dans la réponse
 class ProductInMenu(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     nom: str
     description: str | None = None
@@ -43,14 +43,10 @@ class ProductInMenu(BaseModel):
     disponibilite: bool
     type: str  # ProductType as string
 
-    class Config:
-        from_attributes = True
-
 
 class MenuWithProductsResponse(MenuBase):
+    model_config = ConfigDict(from_attributes=True)
     """Menu avec la liste complète des produits inclus"""
     id: int
     produits: list[ProductInMenu] = Field(default_factory=list)
 
-    class Config:
-        from_attributes = True

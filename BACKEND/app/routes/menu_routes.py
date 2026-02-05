@@ -16,6 +16,8 @@ from app.controllers.menu_controller import (
     add_products_to_menu,
     remove_products_from_menu
 )
+from app.enums.role import RoleEnum
+from app.utils.dependencies import require_role
 
 
 router = APIRouter(
@@ -35,13 +37,14 @@ def get_db():
 @router.post(
     "/",
     response_model=MenuResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
 )
 def create_menu_route(
     menu: MenuCreate,
     db: Session = Depends(get_db)
 ):
-    """Créer un nouveau menu"""
+    """Créer un nouveau menu (Administrateur uniquement)"""
     return create_menu(db, menu)
 
 
@@ -81,60 +84,73 @@ def read_menu_with_products(menu_id: int, db: Session = Depends(get_db)):
     return menu
 
 
-@router.put("/{menu_id}", response_model=MenuResponse)
+@router.put("/{menu_id}", response_model=MenuResponse,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def update_menu_route(
     menu_id: int,
     menu_data: MenuUpdate,
     db: Session = Depends(get_db)
 ):
-    """Mettre à jour un menu"""
+    """Mettre à jour un menu (Administrateur uniquement)"""
     menu = update_menu(db, menu_id, menu_data)
     if not menu:
         raise HTTPException(status_code=404, detail="Menu non trouvé")
     return menu
 
 
-@router.patch("/{menu_id}/toggle-availability", response_model=MenuResponse)
+@router.patch("/{menu_id}/toggle-availability", response_model=MenuResponse,
+    dependencies=[Depends(require_role(
+        RoleEnum.ADMINISTRATEUR,
+        RoleEnum.SUPERVISEUR_DE_PREPARATION
+    ))]
+)
 def toggle_menu_availability(
     menu_id: int,
     db: Session = Depends(get_db)
 ):
-    """Basculer la disponibilité d'un menu"""
+    """Basculer la disponibilité d'un menu (Administrateur et Superviseur)"""
     menu = toggle_availability(db, menu_id)
     if not menu:
         raise HTTPException(status_code=404, detail="Menu non trouvé")
     return menu
 
 
-@router.post("/{menu_id}/products", response_model=MenuWithProductsResponse)
+@router.post("/{menu_id}/products", response_model=MenuWithProductsResponse,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def add_products_route(
     menu_id: int,
     product_ids: List[int],
     db: Session = Depends(get_db)
 ):
-    """Ajouter des produits à un menu"""
+    """Ajouter des produits à un menu (Administrateur uniquement)"""
     menu = add_products_to_menu(db, menu_id, product_ids)
     if not menu:
         raise HTTPException(status_code=404, detail="Menu non trouvé")
     return menu
 
 
-@router.delete("/{menu_id}/products", response_model=MenuWithProductsResponse)
+@router.delete("/{menu_id}/products", response_model=MenuWithProductsResponse,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def remove_products_route(
     menu_id: int,
     product_ids: List[int],
     db: Session = Depends(get_db)
 ):
-    """Retirer des produits d'un menu"""
+    """Retirer des produits d'un menu (Administrateur uniquement)"""
     menu = remove_products_from_menu(db, menu_id, product_ids)
     if not menu:
         raise HTTPException(status_code=404, detail="Menu non trouvé")
     return menu
 
 
-@router.delete("/{menu_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{menu_id}", status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def delete_menu_route(menu_id: int, db: Session = Depends(get_db)):
-    """Supprimer un menu"""
+    """Supprimer un menu (Administrateur uniquement)"""
     success = delete_menu(db, menu_id)
     if not success:
         raise HTTPException(status_code=404, detail="Menu non trouvé")

@@ -13,6 +13,8 @@ from app.controllers.product_controller import (
     delete_product,
     toggle_availability
 )
+from app.enums.role import RoleEnum
+from app.utils.dependencies import require_role
 
 
 router = APIRouter(
@@ -32,13 +34,14 @@ def get_db():
 @router.post(
     "/",
     response_model=ProductResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
 )
 def create_product_route(
     product: ProductCreate,
     db: Session = Depends(get_db)
 ):
-    """Créer un nouveau produit"""
+    """Créer un nouveau produit (Administrateur uniquement)"""
     return create_product(db, product)
 
 
@@ -69,34 +72,43 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
     return product
 
 
-@router.put("/{product_id}", response_model=ProductResponse)
+@router.put("/{product_id}", response_model=ProductResponse,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def update_product_route(
     product_id: int,
     product_data: ProductUpdate,
     db: Session = Depends(get_db)
 ):
-    """Mettre à jour un produit"""
+    """Mettre à jour un produit (Administrateur uniquement)"""
     product = update_product(db, product_id, product_data)
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé")
     return product
 
 
-@router.patch("/{product_id}/toggle-availability", response_model=ProductResponse)
+@router.patch("/{product_id}/toggle-availability", response_model=ProductResponse,
+    dependencies=[Depends(require_role(
+        RoleEnum.ADMINISTRATEUR,
+        RoleEnum.SUPERVISEUR_DE_PREPARATION
+    ))]
+)
 def toggle_product_availability(
     product_id: int,
     db: Session = Depends(get_db)
 ):
-    """Basculer la disponibilité d'un produit"""
+    """Basculer la disponibilité d'un produit (Administrateur et Superviseur)"""
     product = toggle_availability(db, product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Produit non trouvé")
     return product
 
 
-@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
+)
 def delete_product_route(product_id: int, db: Session = Depends(get_db)):
-    """Supprimer un produit"""
+    """Supprimer un produit (Administrateur uniquement)"""
     success = delete_product(db, product_id)
     if not success:
         raise HTTPException(status_code=404, detail="Produit non trouvé")

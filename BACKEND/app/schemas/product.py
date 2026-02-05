@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from app.enums.type import ProductType
 
 
@@ -27,7 +27,5 @@ class ProductUpdate(BaseModel):
 
 
 class ProductResponse(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-
-    class Config:
-        from_attributes = True

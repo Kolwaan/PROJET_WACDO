@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from app.enums.role import RoleEnum
 
 
@@ -17,10 +17,8 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     nom: str
     email: str
     role: RoleEnum
-
-    class Config:
-        from_attributes = True
