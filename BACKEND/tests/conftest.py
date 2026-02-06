@@ -131,52 +131,50 @@ def auth_headers():
         return {"Authorization": f"Bearer {token}"}
     return _auth_headers
 
-
+# Créer un compte
 @pytest.fixture
 def sample_user_data():
-    """Données d'exemple pour créer un utilisateur."""
     return {
         "nom": "Test",
-        "prenom": "User",
         "email": "test@example.com",
         "password": "Password123!",
         "role": RoleEnum.AGENT_ACCUEIL.value
     }
 
-
+# Créer un produit
 @pytest.fixture
 def sample_product_data():
-    """Données d'exemple pour créer un produit."""
     return {
         "nom": "Big Mac",
-        "prix_ht": 5.50,
-        "tva": 5.5,
-        "type": "BURGER",
-        "disponible": True,
-        "image": "bigmac.png"
+        "description": "Le burger classique de McDonald's",
+        "prixHT": 5.50,           
+        "type": "PRODUIT_UNIQUE",         
+        "disponibilite": True,    
+        "image": "bigmac.png",    
+        "options": []             
     }
 
 
+# Créer un menu.
 @pytest.fixture
 def sample_menu_data():
-    """Données d'exemple pour créer un menu."""
     return {
         "nom": "Menu Best Of",
-        "prix_ht": 8.50,
-        "tva": 5.5,
-        "type": "BEST_OF",
-        "disponible": True,
-        "image": "bestof.png"
+        "description": "Le meilleur menu du moment",
+        "prixHT": 8.50,           
+        "menu_type": "BEST_OF",   
+        "disponibilite": True,    
+        "image": "bestof.png",    
+        "product_ids": []
     }
 
-
+# Créer une commande
 @pytest.fixture
 def sample_order_data():
-    """Données d'exemple pour créer une commande."""
     return {
-        "numero": "CMD001",
-        "type": "SUR_PLACE",
-        "statut": "EN_COURS_PREPARATION",
-        "products": [],
-        "menus": []
-    }
+        "chevalet": 456,
+        "sur_place": True,
+        "product_ids": [1],
+        "menu_ids": [1],
+        "preparateur_id": 1
+        }

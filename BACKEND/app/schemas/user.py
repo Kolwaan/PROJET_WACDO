@@ -18,7 +18,7 @@ class UserUpdate(BaseModel):
 
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id: int
+    id: int # généré automatiquement après la création
     nom: str
     email: str
     role: RoleEnum

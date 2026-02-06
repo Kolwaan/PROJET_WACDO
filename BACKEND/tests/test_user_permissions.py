@@ -59,7 +59,6 @@ class TestUserPermissions:
         # D'abord créer un utilisateur
         user_data = {
             "nom": "Test",
-            "prenom": "User",
             "email": "gettest@example.com",
             "password": "Password123!",
             "role": "AGENT_ACCUEIL"
@@ -93,7 +92,6 @@ class TestUserPermissions:
         # Créer un utilisateur
         user_data = {
             "nom": "Original",
-            "prenom": "User",
             "email": "update@example.com",
             "password": "Password123!",
             "role": "AGENT_ACCUEIL"
@@ -130,7 +128,6 @@ class TestUserPermissions:
         # Créer un utilisateur
         user_data = {
             "nom": "ToDelete",
-            "prenom": "User",
             "email": "delete@example.com",
             "password": "Password123!",
             "role": "AGENT_ACCUEIL"
@@ -191,7 +188,6 @@ class TestUserPermissions:
         """✅ L'inscription est publique (pas d'authentification requise)."""
         user_data = {
             "nom": "Public",
-            "prenom": "User",
             "email": "public@example.com",
             "password": "Password123!",
             "role": "AGENT_ACCUEIL"
