@@ -48,7 +48,7 @@ def update_product(db: Session, product_id: int, product_data: ProductUpdate) ->
     if not product:
         return None
     
-    for field, value in product_data.dict(exclude_unset=True).items():
+    for field, value in product_data.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
     
     db.commit()

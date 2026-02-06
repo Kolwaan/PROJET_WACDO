@@ -23,9 +23,8 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
+#  au lieu d’utiliser la vraie base de données, on utilise une base de test
 def override_get_db():
-    """Override de la dépendance get_db pour utiliser la DB de test."""
     try:
         db = TestingSessionLocal()
         yield db
@@ -37,12 +36,10 @@ def override_get_db():
 # Fixtures principales
 # ==========================================
 
+# Crée une base de données propre pour chaque test.
+# Utilise scope="function" pour recréer la DB à chaque test.
 @pytest.fixture(scope="function")
 def db_session():
-    """
-    Crée une base de données propre pour chaque test.
-    Utilise scope="function" pour recréer la DB à chaque test.
-    """
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     try:
@@ -52,11 +49,9 @@ def db_session():
         Base.metadata.drop_all(bind=engine)
 
 
+# Test client avec la base de données de test.
 @pytest.fixture(scope="function")
 def client(db_session):
-    """
-    Client de test FastAPI avec la base de données de test.
-    """
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as test_client:
         yield test_client
@@ -121,12 +116,9 @@ def preparateur_2_token():
 # Fixtures utilitaires
 # ==========================================
 
+# Crée les headers HTTP pour s’authentifier avec un token.
 @pytest.fixture
 def auth_headers():
-    """
-    Fonction helper pour créer des headers d'authentification.
-    Usage: auth_headers(admin_token)
-    """
     def _auth_headers(token: str):
         return {"Authorization": f"Bearer {token}"}
     return _auth_headers

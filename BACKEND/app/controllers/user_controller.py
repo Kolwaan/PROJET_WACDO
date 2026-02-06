@@ -16,7 +16,7 @@ def create_user(db: Session, user_data: UserCreate) -> User:
     user = User(
         nom=user_data.nom,
         email=user_data.email,
-        password=hashed_password,  # ✅ Stockage du mot de passe haché
+        password=hashed_password,  # Stockage du mot de passe haché
         role=user_data.role or RoleEnum.AGENT_ACCUEIL
     )
 
@@ -51,8 +51,9 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None
     if not user:
         return None
 
-    # Hacher le nouveau mot de passe si fourni
-    update_data = user_data.dict(exclude_unset=True)
+    update_data = user_data.model_dump(exclude_unset=True)
+
+    # Hacher le mot de passe si fourni
     if "password" in update_data and update_data["password"]:
         update_data["password"] = hash_password(update_data["password"])
 

@@ -100,7 +100,7 @@ def update_order(db: Session, order_id: int, order_data: OrderUpdate) -> Order |
         return None
     
     # Mettre à jour les champs simples
-    for field, value in order_data.dict(exclude_unset=True, exclude={'product_ids', 'menu_ids'}).items():
+    for field, value in order_data.model_dump(exclude_unset=True, exclude={'product_ids', 'menu_ids'}).items():
         setattr(order, field, value)
     
     # Mettre à jour les produits si fournis

@@ -54,7 +54,7 @@ def update_menu(db: Session, menu_id: int, menu_data: MenuUpdate) -> Menu | None
         return None
     
     # Mettre à jour les champs simples
-    for field, value in menu_data.dict(exclude_unset=True, exclude={'product_ids'}).items():
+    for field, value in menu_data.model_dump(exclude_unset=True, exclude={'product_ids'}).items():
         setattr(menu, field, value)
     
     # Mettre à jour les produits associés si fournis
