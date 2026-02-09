@@ -5,7 +5,7 @@ from app.routes import user_routes, product_routes, menu_routes, order_routes, a
 from app.database import Base, engine
 
 # Créer les tables dans la base de données
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Backend FastAPI Wacdo",
