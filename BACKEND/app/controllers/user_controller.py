@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, UserUpdateAdmin
 from app.enums.role import RoleEnum
 from app.utils.hash import hash_password
 
@@ -45,7 +45,7 @@ def delete_user(db: Session, user_id: int) -> bool:
     return True
 
 # Mettre à jour un utilisateur
-def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None:
+def update_user(db: Session, user_id: int, user_data: UserUpdate | UserUpdateAdmin) -> User | None:
     user = get_user_by_id(db, user_id)
 
     if not user:

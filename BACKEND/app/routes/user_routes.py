@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from app.schemas.user import UserCreate, UserUpdate, UserUpdateAdmin, UserResponse
 from app.controllers.user_controller import (
     create_user,
     get_all_users,
@@ -62,7 +62,7 @@ def update_my_profile(
     db: Session = Depends(get_db)
 ):
     """
-    Met à jour les informations du profil de l'utilisateur connecté.
+    Met à jour les informations du profil de l'utilisateur connecté (email et mot de passe uniquement).
     """
     user = update_user(db, current_user["user_id"], user_data)
     if not user:
@@ -78,8 +78,8 @@ def update_my_profile(
     "/register",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))]
-
+    dependencies=[Depends(require_role(RoleEnum.ADMINISTRATEUR))],
+    summary="Créer un nouveau compte"
 )
 def register_user(
     user: UserCreate,
@@ -136,7 +136,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 )
 def update_user_route(
     user_id: int,
-    user_data: UserUpdate,
+    user_data: UserUpdateAdmin,
     db: Session = Depends(get_db)
 ):
     """

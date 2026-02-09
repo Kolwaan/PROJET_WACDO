@@ -9,12 +9,18 @@ class UserCreate(BaseModel):
     role: RoleEnum | None = None
 
 
+# Schéma pour la mise à jour par un utilisateur normal (email et password uniquement)
 class UserUpdate(BaseModel):
+    email: EmailStr | None = None
+    password: str | None = None
+
+
+# Schéma pour la mise à jour par un administrateur (tous les champs)
+class UserUpdateAdmin(BaseModel):
     nom: str | None = None
     email: EmailStr | None = None
     password: str | None = None
     role: RoleEnum | None = None
-
 
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

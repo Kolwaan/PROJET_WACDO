@@ -112,6 +112,12 @@ class TestUserPermissions:
         response = client.put("/users/1", json={"nom": "Hacked"}, headers=auth_headers(accueil_token))
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
+
+    
+
+
+
+
     # ==========================================
     # Supprimer un utilisateur DELETE /users/{user_id}
     # ==========================================
