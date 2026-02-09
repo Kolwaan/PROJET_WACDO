@@ -59,12 +59,12 @@ def client(db_session):
 
 
 # ==========================================
-# Fixtures pour les tokens JWT
+# Fixtures d’autorisation par rôle (tokens JWT)
 # ==========================================
 
+# Token JWT pour un administrateur.
 @pytest.fixture
 def admin_token():
-    """Token JWT pour un administrateur."""
     return create_access_token({
         "sub": "admin@test.com",
         "role": RoleEnum.ADMINISTRATEUR.value,
@@ -72,9 +72,9 @@ def admin_token():
     })
 
 
+# Token JWT pour un superviseur de préparation.
 @pytest.fixture
 def superviseur_token():
-    """Token JWT pour un superviseur de préparation."""
     return create_access_token({
         "sub": "superviseur@test.com",
         "role": RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
@@ -82,9 +82,9 @@ def superviseur_token():
     })
 
 
+# Token JWT pour un agent de préparation.
 @pytest.fixture
 def preparateur_token():
-    """Token JWT pour un agent de préparation."""
     return create_access_token({
         "sub": "preparateur@test.com",
         "role": RoleEnum.AGENT_DE_PREPARATION.value,
@@ -92,9 +92,9 @@ def preparateur_token():
     })
 
 
+# Token JWT pour un agent d'accueil.
 @pytest.fixture
 def accueil_token():
-    """Token JWT pour un agent d'accueil."""
     return create_access_token({
         "sub": "accueil@test.com",
         "role": RoleEnum.AGENT_ACCUEIL.value,
@@ -102,9 +102,9 @@ def accueil_token():
     })
 
 
+# Token JWT pour un deuxième agent de préparation (pour tester les restrictions).
 @pytest.fixture
 def preparateur_2_token():
-    """Token JWT pour un deuxième agent de préparation (pour tester les restrictions)."""
     return create_access_token({
         "sub": "preparateur2@test.com",
         "role": RoleEnum.AGENT_DE_PREPARATION.value,
@@ -112,16 +112,21 @@ def preparateur_2_token():
     })
 
 
-# ==========================================
-# Fixtures utilitaires
-# ==========================================
+# ===============================
+# Fixture d'authentification (qui est connecté)
+# ===============================
 
-# Crée les headers HTTP pour s’authentifier avec un token.
+# Simule la connexion (authentification) d'un utilisateur avec un token et génère les headers HTTP
 @pytest.fixture
 def auth_headers():
     def _auth_headers(token: str):
         return {"Authorization": f"Bearer {token}"}
     return _auth_headers
+
+
+# ============================
+# Fixtures de données de test
+# ============================
 
 # Créer un compte
 @pytest.fixture
