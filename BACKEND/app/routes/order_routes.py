@@ -46,13 +46,12 @@ def get_db():
     "/",
     response_model=OrderWithDetailsResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(require_role(RoleEnum.AGENT_ACCUEIL))]
 )
 def create_order_route(
     order: OrderCreate,
     db: Session = Depends(get_db)
 ):
-    """Créer une nouvelle commande (Agent d'accueil uniquement)"""
+    """Créer une nouvelle commande (route publique)"""
     return create_order(db, order)
 
 
