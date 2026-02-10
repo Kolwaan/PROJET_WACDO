@@ -21,47 +21,9 @@ def get_db():
         db.close()
 
 
-# ========================================
-# ROUTE 1 : Login JSON (pour l'app Wacdo)
-# ========================================
-@router.post("/login", response_model=TokenResponse)
-def login(
-    credentials: LoginRequest,
-    db: Session = Depends(get_db)
-):
-
-    user = authenticate_user(db, credentials.email, credentials.password)
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email ou mot de passe incorrect",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    access_token = create_access_token(
-        data={
-            "sub": user.email,
-            "role": user.role.value,
-            "user_id": user.id
-        },
-        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
-    
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": {
-            "id": user.id,
-            "nom": user.nom,
-            "email": user.email,
-            "role": user.role.value
-        }
-    }
-
 
 # ========================================
-# ROUTE 2 : Token OAuth2 (pour Swagger)
+# ROUTE Token OAuth2
 # ========================================
 @router.post("/token", response_model=TokenResponse)
 def login_for_swagger(

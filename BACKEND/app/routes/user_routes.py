@@ -13,6 +13,10 @@ from app.controllers.user_controller import (
 from app.utils.dependencies import get_current_user, require_role
 from app.enums.role import RoleEnum
 
+from app.models.user import User  # Modèle SQLAlchemy
+from app.schemas.user import UserCreate  # Schéma Pydantic
+from app.utils.hash import hash_password  
+
 
 router = APIRouter(
     prefix="/users",
@@ -163,3 +167,37 @@ def delete_user_route(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
 
+
+# ==================================================================
+# ROUTE DE CRÉATION D'UN PREMIER ADMINISTRATEUR (pour la production)
+# ==================================================================
+
+@router.post("/auth/setup-admin", status_code=201)
+def setup_admin(admin_data: UserCreate, db: Session = Depends(get_db)):
+    """
+    Route d'installation - Accessible uniquement si aucun admin existe
+    """
+    # Vérifier qu'aucun admin n'existe
+    admin_exists = db.query(User).filter(  # ← User (modèle), pas admin_data
+        User.role == RoleEnum.ADMINISTRATEUR
+    ).first()
+    
+    if admin_exists:
+        raise HTTPException(
+            status_code=403,
+            detail="Un administrateur existe déjà"
+        )
+    
+    # Créer le premier admin
+    admin = User(
+        nom=admin_data.nom,
+        email=admin_data.email,
+        password=hash_password(admin_data.password),
+        role=RoleEnum.ADMINISTRATEUR
+    )
+    
+    db.add(admin)
+    db.commit()
+    db.refresh(admin)
+    
+    return {"message": "Premier administrateur créé avec succès"}
