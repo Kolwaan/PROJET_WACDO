@@ -11,6 +11,7 @@ class UserCreate(BaseModel):
 
 # Schéma pour la mise à jour par un utilisateur normal (email et password uniquement)
 class UserUpdate(BaseModel):
+    model_config = ConfigDict(extra='forbid') # Rejette les champs non autorisés
     email: EmailStr | None = None
     password: str | None = None
 

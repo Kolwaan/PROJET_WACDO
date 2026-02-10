@@ -145,13 +145,61 @@ class TestUserPermissions:
     # Profil personnel /users/me
     # ==========================================
 
-    def test_authenticated_user_can_get_own_profile(self, client, preparateur_token, auth_headers):
+    # Un utilisateuteur peut consulter son profil
+    def test_authenticated_user_can_get_own_profile(self, client, admin_token, preparateur_token, auth_headers):
+        # création de l'utilisateur (id3)
+        email = f"preparateur_{uuid4().hex}@example.com"
+        user_data = {
+            "nom": "Preparateur Test",
+            "email": email,
+            "password": "Password123!",
+            "role": "AGENT_DE_PREPARATION"
+        }
+        create_response = client.post("/users/register", json=user_data, headers=auth_headers(admin_token))
+        assert create_response.status_code == status.HTTP_201_CREATED
+        
+        # récupération du profil
         response = client.get("/users/me", headers=auth_headers(preparateur_token))
         assert response.status_code == status.HTTP_200_OK
 
-    def test_authenticated_user_can_update_own_profile(self, client, accueil_token, auth_headers):
-        response = client.put("/users/me", json={"nom": "NewName"}, headers=auth_headers(accueil_token))
+
+    # Un utilisateur peut mettre à jour son profil (email et mdp uniquement)
+    def test_authenticated_user_can_update_own_profile(self, client, admin_token, accueil_token, auth_headers):
+        # création de l'utilisateur (id4)
+        email = f"accueil_{uuid4().hex}@example.com"
+        user_data = {
+            "nom": "Accueil Test",
+            "email": email,
+            "password": "Password123!",
+            "role": "AGENT_ACCUEIL"
+        }
+        create_response = client.post("/users/register", json=user_data, headers=auth_headers(admin_token))
+        assert create_response.status_code == status.HTTP_201_CREATED
+        
+        # test de la MAJ du profil
+        new_email = f"nouveau_{uuid4().hex}@example.com"
+        response = client.put("/users/me", json={"email": new_email, "password": "Test234!"}, headers=auth_headers(accueil_token))
         assert response.status_code == status.HTTP_200_OK
+        assert response.json()["email"] == new_email
+        
+        
+    # Un utilisateuteur non-admin ne peut pas mettre à jour le nom et le role
+    def test_non_admin_user_cannot_update_own_profile(self, client, admin_token, accueil_token, auth_headers):
+        # création de l'utilisateur (id4)
+        email = f"accueil_{uuid4().hex}@example.com"
+        user_data = {
+            "nom": "Accueil Test",
+            "email": email,
+            "password": "Password123!",
+            "role": "AGENT_ACCUEIL"
+        }
+        create_response = client.post("/users/register", json=user_data, headers=auth_headers(admin_token))
+        assert create_response.status_code == status.HTTP_201_CREATED
+
+        # test de la tentative de MAJ du profil (nom et rôle)
+        response = client.put("/users/me", json={"nom": "hacker", "role": "ADMINISTRATEUR"}, headers=auth_headers(accueil_token))
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
 
     def test_unauthenticated_cannot_access_me(self, client):
         response = client.get("/users/me")
