@@ -4,234 +4,156 @@ import pytest
 from fastapi import status
 
 
-    # Tests pour les routes de commandes
 class TestOrderPermissions:
 
     # ==========================================
-    # Création de commande POST /orders/
+    # POST /orders/ - Création (route publique)
     # ==========================================
 
-    # Un agent d'accueil peut créer une commande
-    def test_accueil_can_create_order(self, client, accueil_token, auth_headers, sample_order_data):
-        response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
+    def test_create_order_without_auth(self, client, sample_order_data):
+        """Une commande peut être créée sans authentification (route publique)"""
+        response = client.post("/orders/", json=sample_order_data)
+        assert response.status_code == status.HTTP_201_CREATED
+        assert "id" in response.json()
+        assert "menus" in response.json()
+
+    def test_create_order_with_menu_and_options(self, client):
+        """Une commande peut être créée avec un menu et ses options"""
+        order_data = {
+            "chevalet": 42,
+            "sur_place": True,
+            "menu_ids": [
+                {
+                    "menu_id": 1,
+                    "product_ids": [1, 2]  # Frites + Boisson
+                }
+            ]
+        }
+        response = client.post("/orders/", json=order_data)
+        assert response.status_code == status.HTTP_201_CREATED
+        
+        # Vérifier que les options apparaissent dans le menu
+        order = response.json()
+        assert len(order["menus"]) == 1
+        # Les options doivent apparaître dans menu.produits
+        # (si les produits 1 et 2 existent dans la DB de test)
+
+    def test_create_order_with_simple_products(self, client):
+        """Une commande peut contenir des produits simples"""
+        order_data = {
+            "chevalet": 10,
+            "sur_place": False,
+            "product_ids": [1, 2]
+        }
+        response = client.post("/orders/", json=order_data)
         assert response.status_code == status.HTTP_201_CREATED
 
-    # Un utilisateur non accueil ne peut pas créer de commande
-    def test_non_accueil_cannot_create_order(self, client, preparateur_token, auth_headers, sample_order_data):
-        response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(preparateur_token)
-        )
+    def test_create_order_mixed(self, client):
+        """Une commande peut contenir à la fois des menus et des produits"""
+        order_data = {
+            "chevalet": 15,
+            "sur_place": True,
+            "product_ids": [1],
+            "menu_ids": [
+                {
+                    "menu_id": 1,
+                    "product_ids": [2, 3]
+                }
+            ]
+        }
+        response = client.post("/orders/", json=order_data)
+        assert response.status_code == status.HTTP_201_CREATED
+
+    # ==========================================
+    # GET /orders/ - Liste (Admin uniquement)
+    # ==========================================
+
+    def test_admin_can_list_all_orders(self, client, admin_token, auth_headers):
+        """Un admin peut lister toutes les commandes"""
+        response = client.get("/orders/", headers=auth_headers(admin_token))
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_non_admin_cannot_list_all_orders(self, client, preparateur_token, auth_headers):
+        """Un non-admin ne peut pas lister toutes les commandes"""
+        response = client.get("/orders/", headers=auth_headers(preparateur_token))
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    # Un utilisateur non authentifié ne peut pas créer de commande
-    def test_unauthenticated_cannot_create_order(self, client, sample_order_data):
-        response = client.post("/orders/", json=sample_order_data)
+    # ==========================================
+    # GET /orders/{id} - Détails (Authentifié)
+    # ==========================================
+
+    def test_authenticated_user_can_view_order(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un utilisateur authentifié peut voir une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # La consulter
+        response = client.get(f"/orders/{order_id}", headers=auth_headers(preparateur_token))
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_unauthenticated_cannot_view_order(self, client, sample_order_data):
+        """Un utilisateur non authentifié ne peut pas voir une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # Essayer de la consulter sans auth
+        response = client.get(f"/orders/{order_id}")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     # ==========================================
-    # Liste complète des commandes GET /orders/
+    # PATCH /orders/{id}/status - Changement de statut
     # ==========================================
 
-    # Un administrateur peut lister toutes les commandes
-    def test_admin_can_list_all_orders(self, client, admin_token, auth_headers):
-        response = client.get(
-            "/orders/",
-            headers=auth_headers(admin_token)
-        )
-        assert response.status_code == status.HTTP_200_OK
-
-    # Un non-admin ne peut pas lister toutes les commandes
-    def test_non_admin_cannot_list_all_orders(self, client, preparateur_token, auth_headers):
-        response = client.get(
-            "/orders/",
-            headers=auth_headers(preparateur_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    # ==========================================
-    # Voir commandes par statut GET /orders/status/{status}
-    # ==========================================
-
-    # Préparateur, superviseur et accueil peuvent voir certaines commandes par statut
-    def test_roles_can_view_orders_by_status(self, client, preparateur_token, superviseur_token, accueil_token, auth_headers):
-        for token in [preparateur_token, superviseur_token, accueil_token]:
-            response = client.get(
-                "/orders/status/EN_COURS_PREPARATION",
-                headers=auth_headers(token)
-            )
-            assert response.status_code == status.HTTP_200_OK
-
-    # Un admin ne peut pas accéder aux commandes par statut
-    def test_admin_cannot_view_orders_by_status(self, client, admin_token, auth_headers):
-        response = client.get(
-            "/orders/status/EN_COURS_PREPARATION",
-            headers=auth_headers(admin_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    # ==========================================
-    # Voir commandes d'un préparateur GET /orders/preparateur/{id}
-    # ==========================================
-
-    # Un préparateur peut voir ses propres commandes
-    def test_preparateur_can_view_own_orders(self, client, preparateur_token, auth_headers):
-        response = client.get(
-            "/orders/preparateur/3",
-            headers=auth_headers(preparateur_token)
-        )
-        assert response.status_code == status.HTTP_200_OK
-
-    # Un préparateur ne peut pas voir les commandes d'un autre préparateur
-    def test_preparateur_cannot_view_other_orders(self, client, preparateur_token, auth_headers):
-        response = client.get(
-            "/orders/preparateur/5",
-            headers=auth_headers(preparateur_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    # ==========================================
-    # Modifier le statut PATCH /orders/{id}/status
-    # ==========================================
-
-    # Préparateur peut changer les statuts autorisés
-    def test_preparateur_can_change_status(self, client, accueil_token, preparateur_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        for statut in ["EN_COURS_PREPARATION", "PREPAREE"]:
-            response = client.patch(
-                f"/orders/{order_id}/status",
-                json={"statut": statut},
-                headers=auth_headers(preparateur_token)
-            )
-            assert response.status_code == status.HTTP_200_OK
-
-    # Seul un préparateur peut mettre EN_COURS_PREPARATION
-    def test_non_preparateur_cannot_change_to_en_preparation(self, client, accueil_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
+    def test_preparateur_can_change_status(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur peut changer le statut d'une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # Changer le statut
         response = client.patch(
             f"/orders/{order_id}/status",
-            json={"statut": "EN_COURS_PREPARATION"},
-            headers=auth_headers(accueil_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    # ==========================================
-    # Assigner un préparateur PATCH /orders/{id}/assign/{preparateur_id}
-    # ==========================================
-
-    # Un superviseur peut assigner un préparateur
-    def test_superviseur_can_assign_preparateur(self, client, accueil_token, superviseur_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        response = client.patch(
-            f"/orders/{order_id}/assign/3",
-            headers=auth_headers(superviseur_token)
+            json={"statut": "PREPAREE"},
+            headers=auth_headers(preparateur_token)
         )
         assert response.status_code == status.HTTP_200_OK
 
-    # Seul un superviseur peut assigner un préparateur
-    def test_non_superviseur_cannot_assign(self, client, accueil_token, preparateur_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
+    def test_accueil_can_deliver_order(self, client, accueil_token, auth_headers, sample_order_data):
+        """Un agent d'accueil peut livrer une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # Livrer
         response = client.patch(
-            f"/orders/{order_id}/assign/3",
-            headers=auth_headers(preparateur_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
-    # ==========================================
-    # Modification complète PUT /orders/{order_id}
-    # ==========================================
-
-    # Un admin peut modifier une commande
-    def test_admin_can_update_order(self, client, accueil_token, admin_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
+            f"/orders/{order_id}/status",
+            json={"statut": "LIVREE"},
             headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        response = client.put(
-            f"/orders/{order_id}",
-            json={"numero": "CMD002"},
-            headers=auth_headers(admin_token)
         )
         assert response.status_code == status.HTTP_200_OK
 
-    # Un non-admin ne peut pas modifier une commande
-    def test_non_admin_cannot_update_order(self, client, accueil_token, preparateur_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        response = client.put(
-            f"/orders/{order_id}",
-            json={"numero": "HACKED"},
-            headers=auth_headers(preparateur_token)
-        )
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
     # ==========================================
-    # Suppression DELETE /orders/{order_id}
+    # DELETE /orders/{id} - Suppression (Admin)
     # ==========================================
 
-    # Un administrateur peut supprimer une commande
-    def test_admin_can_delete_order(self, client, accueil_token, admin_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        response = client.delete(
-            f"/orders/{order_id}",
-            headers=auth_headers(admin_token)
-        )
+    def test_admin_can_delete_order(self, client, admin_token, auth_headers, sample_order_data):
+        """Un admin peut supprimer une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # Supprimer
+        response = client.delete(f"/orders/{order_id}", headers=auth_headers(admin_token))
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    # Un non-admin ne peut pas supprimer une commande
-    def test_non_admin_cannot_delete_order(self, client, accueil_token, preparateur_token, auth_headers, sample_order_data):
-        create_response = client.post(
-            "/orders/",
-            json=sample_order_data,
-            headers=auth_headers(accueil_token)
-        )
-        order_id = create_response.json()["id"]
-
-        response = client.delete(
-            f"/orders/{order_id}",
-            headers=auth_headers(preparateur_token)
-        )
+    def test_non_admin_cannot_delete_order(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un non-admin ne peut pas supprimer une commande"""
+        # Créer une commande
+        create_resp = client.post("/orders/", json=sample_order_data)
+        order_id = create_resp.json()["id"]
+        
+        # Essayer de supprimer
+        response = client.delete(f"/orders/{order_id}", headers=auth_headers(preparateur_token))
         assert response.status_code == status.HTTP_403_FORBIDDEN

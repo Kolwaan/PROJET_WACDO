@@ -172,6 +172,11 @@ def sample_order_data():
         "chevalet": 456,
         "sur_place": True,
         "product_ids": [1],
-        "menu_ids": [1],
+        "menu_ids": [
+            {
+                "menu_id": 1,
+                "product_ids": [2, 3]  # Options : produits 2 et 3
+            }
+        ],
         "preparateur_id": 1
-        }
+    }
