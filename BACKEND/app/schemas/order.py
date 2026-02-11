@@ -10,8 +10,8 @@ class OrderBase(BaseModel):
     sur_place: bool = True
 
 
-class MenuComposition(BaseModel):
-    """Représente un menu avec ses options (frites + boisson)"""
+class MenuWithOptions(BaseModel):
+    """Menu avec ses options (frites + boisson)"""
     menu_id: int
     product_ids: list[int] = Field(
         default_factory=list,
@@ -24,13 +24,9 @@ class OrderCreate(OrderBase):
         default_factory=list,
         description="Produits simples (hors menus)"
     )
-    menu_ids: list[int] | None = Field(
+    menu_ids: list[MenuWithOptions] | None = Field(
         default_factory=list,
-        description="Menus sans options (ancien format)"
-    )
-    menus_composes: list[MenuComposition] | None = Field(
-        default_factory=list,
-        description="Menus avec leurs options (frites + boisson)"
+        description="Menus avec leurs options"
     )
     preparateur_id: int | None = None
 
@@ -41,7 +37,7 @@ class OrderUpdate(BaseModel):
     statut: OrderStatus | None = None
     preparateur_id: int | None = None
     product_ids: list[int] | None = None
-    menu_ids: list[int] | None = None
+    menu_ids: list[MenuWithOptions] | None = None
 
 
 class OrderResponse(OrderBase):

@@ -54,13 +54,14 @@ def create_order(db: Session, order_data: OrderCreate) -> Order:
         products = db.query(Product).filter(Product.id.in_(order_data.product_ids)).all()
         order.produits = products
     
-    # Gérer les menus avec leurs options (nouvelle approche)
-    if order_data.menus_composes:
-        menu_ids = [mc.menu_id for mc in order_data.menus_composes]
-        menus = db.query(Menu).filter(Menu.id.in_(menu_ids)).all()
+    # Gérer les menus avec leurs options
+    if order_data.menu_ids:
+        # Extraire les IDs des menus
+        menu_id_list = [m.menu_id for m in order_data.menu_ids]
+        menus = db.query(Menu).filter(Menu.id.in_(menu_id_list)).all()
         
         # Vérifier que tous les menus existent
-        if len(menus) != len(menu_ids):
+        if len(menus) != len(menu_id_list):
             raise ValueError("Certains menus n'existent pas")
         
         order.menus = menus
@@ -70,34 +71,28 @@ def create_order(db: Session, order_data: OrderCreate) -> Order:
         db.flush()
         
         # Insérer les options pour chaque menu
-        for menu_compose in order_data.menus_composes:
+        for menu_with_opts in order_data.menu_ids:
             # Vérifier que les options (produits) existent
-            if menu_compose.product_ids:
+            if menu_with_opts.product_ids:
                 options = db.query(Product).filter(
-                    Product.id.in_(menu_compose.product_ids)
+                    Product.id.in_(menu_with_opts.product_ids)
                 ).all()
                 
-                if len(options) != len(menu_compose.product_ids):
+                if len(options) != len(menu_with_opts.product_ids):
                     db.rollback()
-                    raise ValueError(f"Certaines options du menu {menu_compose.menu_id} n'existent pas")
+                    raise ValueError(f"Certaines options du menu {menu_with_opts.menu_id} n'existent pas")
                 
                 # Insérer chaque option dans order_menu_options
-                for option_id in menu_compose.product_ids:
+                for option_id in menu_with_opts.product_ids:
                     insert_stmt = text("""
                         INSERT INTO order_menu_options (order_id, menu_id, option_product_id)
                         VALUES (:order_id, :menu_id, :option_id)
                     """)
                     db.execute(insert_stmt, {
                         "order_id": order.id,
-                        "menu_id": menu_compose.menu_id,
+                        "menu_id": menu_with_opts.menu_id,
                         "option_id": option_id
                     })
-    
-    # Support de l'ancienne méthode (menu_ids sans options)
-    elif order_data.menu_ids:
-        menus = db.query(Menu).filter(Menu.id.in_(order_data.menu_ids)).all()
-        order.menus = menus
-        db.add(order)
     else:
         db.add(order)
     
@@ -113,7 +108,6 @@ def create_order(db: Session, order_data: OrderCreate) -> Order:
     
     # Enrichir les menus avec leurs options
     return _enrich_order_menus_with_options(db, order)
-
 
 def get_all_orders(db: Session) -> list[Order]:
     """Récupérer toutes les commandes avec leurs relations"""

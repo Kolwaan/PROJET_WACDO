@@ -3,6 +3,7 @@ from app.database import Base
 from app.models.menu_product import menu_products
 from app.models.order_product import order_products
 from app.models.order_menu import order_menus
+from app.models.order_menu_option import order_menu_options
 
 # Import des modèles ensuite
 from app.models.product import Product
@@ -15,6 +16,7 @@ __all__ = [
     'menu_products',
     'order_products',
     'order_menus',
+    'order_menu_options',
     'Product',
     'Menu',
     'Order',
