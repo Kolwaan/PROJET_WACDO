@@ -10,9 +10,28 @@ class OrderBase(BaseModel):
     sur_place: bool = True
 
 
+class MenuComposition(BaseModel):
+    """Représente un menu avec ses options (frites + boisson)"""
+    menu_id: int
+    product_ids: list[int] = Field(
+        default_factory=list,
+        description="IDs des options choisies (frites/potatoes + boisson)"
+    )
+
+
 class OrderCreate(OrderBase):
-    product_ids: list[int] | None = Field(default_factory=list)
-    menu_ids: list[int] | None = Field(default_factory=list)
+    product_ids: list[int] | None = Field(
+        default_factory=list,
+        description="Produits simples (hors menus)"
+    )
+    menu_ids: list[int] | None = Field(
+        default_factory=list,
+        description="Menus sans options (ancien format)"
+    )
+    menus_composes: list[MenuComposition] | None = Field(
+        default_factory=list,
+        description="Menus avec leurs options (frites + boisson)"
+    )
     preparateur_id: int | None = None
 
 
