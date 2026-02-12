@@ -15,9 +15,9 @@ app = FastAPI(
     redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
 )
 
-@app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
+# @app.on_event("startup")
+# def startup():
+#     Base.metadata.create_all(bind=engine)
 
 # Configuration CORS — ALLOWED_ORIGINS est déjà une list[str] grâce à Pydantic
 app.add_middleware(
