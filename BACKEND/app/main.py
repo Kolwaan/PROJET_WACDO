@@ -6,7 +6,6 @@ from app.database import Base, engine
 from app.utils.settings import settings
 
 # Créer les tables dans la base de données (utilise Alembic en production)
-# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Backend FastAPI Wacdo",
@@ -15,6 +14,10 @@ app = FastAPI(
     docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
     redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
 )
+
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
 
 # Configuration CORS — ALLOWED_ORIGINS est déjà une list[str] grâce à Pydantic
 app.add_middleware(
