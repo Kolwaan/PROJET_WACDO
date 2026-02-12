@@ -9,6 +9,13 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./base_de_donnees.db")
 
+# Render fournit des URLs "postgres://" (ancien format), SQLAlchemy attend "postgresql://"
+# On corrige aussi pour utiliser le driver psycopg3 en production
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
 # Configuration adaptée selon le type de base de données
 if DATABASE_URL.startswith("sqlite"):
     # SQLite pour le développement local
