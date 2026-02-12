@@ -52,7 +52,11 @@ def create_order_route(
     db: Session = Depends(get_db)
 ):
     """Créer une nouvelle commande (route publique)"""
-    return create_order(db, order)
+    try:
+        created_order = create_order(db, order)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return created_order
 
 
 @router.get("/", response_model=list[OrderWithDetailsResponse],
