@@ -170,16 +170,20 @@ def update_status_route(
     # Vérification des permissions selon le statut cible
     if target_status == OrderStatus.LIVREE:
         # Seul l'accueil peut livrer/remettre une commande
-        if user_role != RoleEnum.AGENT_ACCUEIL.value:
+        if user_role not in [
+            RoleEnum.AGENT_ACCUEIL,
+            RoleEnum.ADMINISTRATEUR.value
+        ]:            
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Seul un agent d'accueil peut livrer une commande"
-            )
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Seul un agent d'accueil peut livrer une commande"
+                    )
     elif target_status in [OrderStatus.EN_COURS_PREPARATION, OrderStatus.PREPAREE]:
         # Seuls les préparateurs peuvent changer vers ces statuts
         if user_role not in [
             RoleEnum.AGENT_DE_PREPARATION.value,
-            RoleEnum.SUPERVISEUR_DE_PREPARATION.value
+            RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
+            RoleEnum.ADMINISTRATEUR.value
         ]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -200,7 +204,10 @@ def update_status_route(
 
 
 @router.patch("/{order_id}/assign/{preparateur_id}", response_model=OrderWithDetailsResponse,
-    dependencies=[Depends(require_role(RoleEnum.SUPERVISEUR_DE_PREPARATION))]
+    dependencies=[Depends(require_role(
+        RoleEnum.SUPERVISEUR_DE_PREPARATION,
+        RoleEnum.ADMINISTRATEUR
+        ))]
 )
 def assign_preparateur_route(
     order_id: int,
