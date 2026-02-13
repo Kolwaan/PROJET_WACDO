@@ -162,6 +162,91 @@ class TestOrderPermissions:
             headers=auth_headers(accueil_token)
         )
         assert response.status_code == status.HTTP_200_OK
+        
+        
+        
+    def test_preparateur_can_set_preparee(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur peut marquer sa commande comme PREPAREE"""
+        order_data = {**sample_order_data, "preparateur_id": 3}
+        order_id = client.post("/orders/", json=order_data).json()["id"]
+
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "PREPAREE"},
+            headers=auth_headers(preparateur_token)
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()["statut"] == "PREPAREE"
+
+    def test_preparateur_cannot_set_livree(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur ne peut pas marquer une commande comme LIVREE"""
+        order_data = {**sample_order_data, "preparateur_id": 3}
+        order_id = client.post("/orders/", json=order_data).json()["id"]
+
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "LIVREE"},
+            headers=auth_headers(preparateur_token)
+        )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_preparateur_cannot_set_en_cours(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur ne peut pas remettre une commande EN_COURS_PREPARATION"""
+        order_data = {**sample_order_data, "preparateur_id": 3}
+        order_id = client.post("/orders/", json=order_data).json()["id"]
+
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "EN_COURS_PREPARATION"},
+            headers=auth_headers(preparateur_token)
+        )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_accueil_can_set_livree(self, client, accueil_token, auth_headers, sample_order_data):
+        """Un agent d'accueil peut marquer une commande comme LIVREE"""
+        order_id = client.post("/orders/", json=sample_order_data).json()["id"]
+
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "LIVREE"},
+            headers=auth_headers(accueil_token)
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_accueil_cannot_set_preparee(self, client, accueil_token, auth_headers, sample_order_data):
+        """Un agent d'accueil ne peut pas marquer une commande comme PREPAREE"""
+        order_id = client.post("/orders/", json=sample_order_data).json()["id"]
+
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "PREPAREE"},
+            headers=auth_headers(accueil_token)
+        )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_superviseur_can_set_any_status(self, client, superviseur_token, auth_headers, sample_order_data):
+        """Un superviseur peut mettre n'importe quel statut"""
+        order_id = client.post("/orders/", json=sample_order_data).json()["id"]
+
+        for statut_cible in ["PREPAREE", "LIVREE", "EN_COURS_PREPARATION"]:
+            response = client.patch(
+                f"/orders/{order_id}/status",
+                json={"statut": statut_cible},
+                headers=auth_headers(superviseur_token)
+            )
+            assert response.status_code == status.HTTP_200_OK
+
+    def test_admin_can_set_any_status(self, client, admin_token, auth_headers, sample_order_data):
+        """Un admin peut mettre n'importe quel statut"""
+        order_id = client.post("/orders/", json=sample_order_data).json()["id"]
+
+        for statut_cible in ["PREPAREE", "LIVREE", "EN_COURS_PREPARATION"]:
+            response = client.patch(
+                f"/orders/{order_id}/status",
+                json={"statut": statut_cible},
+                headers=auth_headers(admin_token)
+            )
+            assert response.status_code == status.HTTP_200_OK
 
     # ==========================================
     # DELETE /orders/{id} - Suppression (Admin)

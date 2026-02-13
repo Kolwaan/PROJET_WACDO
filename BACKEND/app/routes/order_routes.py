@@ -180,6 +180,8 @@ def update_order_route(
     return order
 
 
+
+
 @router.patch("/{order_id}/status", response_model=OrderWithDetailsResponse)
 def update_status_route(
     order_id: int,
@@ -206,16 +208,19 @@ def update_status_route(
 
     # Vérification des permissions selon le statut cible
     if target_status == OrderStatus.LIVREE:
+        # Seuls l'accueil, le superviseur et l'admin peuvent livrer
         if user_role not in [
             RoleEnum.AGENT_ACCUEIL.value,
+            RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
             RoleEnum.ADMINISTRATEUR.value
         ]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Seul un agent d'accueil peut livrer une commande"
+                detail="Seul un agent d'accueil peut marquer une commande comme livrée"
             )
 
-    elif target_status in [OrderStatus.EN_COURS_PREPARATION, OrderStatus.PREPAREE]:
+    elif target_status == OrderStatus.PREPAREE:
+        # Le préparateur (sur ses commandes), le superviseur et l'admin peuvent marquer PREPAREE
         if user_role not in [
             RoleEnum.AGENT_DE_PREPARATION.value,
             RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
@@ -223,18 +228,21 @@ def update_status_route(
         ]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Seul un agent de préparation peut modifier ce statut"
+                detail="Seul un agent de préparation peut marquer une commande comme préparée"
             )
 
-    else:
-        if user_role != RoleEnum.ADMINISTRATEUR.value:
+    elif target_status == OrderStatus.EN_COURS_PREPARATION:
+        # Seuls le superviseur et l'admin peuvent (re)mettre EN_COURS
+        if user_role not in [
+            RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
+            RoleEnum.ADMINISTRATEUR.value
+        ]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Vous n'avez pas les permissions pour ce changement de statut"
+                detail="Seul un superviseur peut remettre une commande en cours de préparation"
             )
 
     return update_order_status(db, order_id, target_status)
-
 
 
 
