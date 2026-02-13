@@ -69,13 +69,13 @@ def read_orders(db: Session = Depends(get_db)):
 
 @router.get("/status/{order_status}", response_model=list[OrderWithDetailsResponse],
     dependencies=[Depends(require_role(
-        RoleEnum.AGENT_DE_PREPARATION,
+        RoleEnum.AGENT_ACCUEIL,
         RoleEnum.SUPERVISEUR_DE_PREPARATION,
-        RoleEnum.AGENT_ACCUEIL
+        RoleEnum.ADMINISTRATEUR
     ))]
 )
 def read_orders_by_status(order_status: OrderStatus, db: Session = Depends(get_db)):
-    """Récupérer les commandes par statut avec leurs détails (Préparation et Accueil)"""
+    """Récupérer les commandes par statut avec leurs détails (accueil, superviseur et admin)"""
     return get_orders_by_status(db, order_status)
 
 
@@ -84,13 +84,14 @@ def read_orders_by_preparateur(
     preparateur_id: int,
     current_user: dict = Depends(require_role(
         RoleEnum.AGENT_DE_PREPARATION,
-        RoleEnum.SUPERVISEUR_DE_PREPARATION
+        RoleEnum.SUPERVISEUR_DE_PREPARATION,
+        RoleEnum.ADMINISTRATEUR
     )),
     db: Session = Depends(get_db)
 ):
     """Récupérer les commandes d'un préparateur avec leurs détails"""
-    # Vérifier que l'agent ne consulte que ses propres commandes
-    # (sauf si c'est un superviseur)
+    # Vérifier que l'agent de préparation ne consulte que ses propres commandes
+    # (sauf si c'est un superviseur ou un admin)
     if current_user["role"] == RoleEnum.AGENT_DE_PREPARATION.value:
         if current_user["user_id"] != preparateur_id:
             raise HTTPException(
@@ -104,33 +105,52 @@ def read_orders_by_preparateur(
 @router.get("/sur-place", response_model=list[OrderWithDetailsResponse],
     dependencies=[Depends(require_role(
         RoleEnum.AGENT_ACCUEIL,
-        RoleEnum.SUPERVISEUR_DE_PREPARATION
+        RoleEnum.SUPERVISEUR_DE_PREPARATION,
+        RoleEnum.ADMINISTRATEUR
     ))]
 )
 def read_orders_sur_place(db: Session = Depends(get_db)):
-    """Récupérer les commandes sur place avec leurs détails (Accueil et Superviseur)"""
+    """Récupérer les commandes sur place avec leurs détails (Accueil, Superviseur et Admin)"""
     return get_orders_sur_place(db)
 
 
 @router.get("/a-emporter", response_model=list[OrderWithDetailsResponse],
     dependencies=[Depends(require_role(
         RoleEnum.AGENT_ACCUEIL,
-        RoleEnum.SUPERVISEUR_DE_PREPARATION
+        RoleEnum.SUPERVISEUR_DE_PREPARATION,
+        RoleEnum.ADMINISTRATEUR
     ))]
 )
 def read_orders_a_emporter(db: Session = Depends(get_db)):
-    """Récupérer les commandes à emporter avec leurs détails (Accueil et Superviseur)"""
+    """Récupérer les commandes à emporter avec leurs détails (Accueil, Superviseur et Admin)"""
     return get_orders_a_emporter(db)
 
 
-@router.get("/{order_id}", response_model=OrderWithDetailsResponse,
-    dependencies=[Depends(get_current_user)]
-)
-def read_order(order_id: int, db: Session = Depends(get_db)):
-    """Récupérer une commande par ID avec tous ses détails (Authentification requise)"""
+
+
+@router.get("/{order_id}", response_model=OrderWithDetailsResponse)
+def read_order(
+    order_id: int,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Récupérer une commande par ID avec contrôle d'accès selon le rôle"""
+
     order = get_order_by_id(db, order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Commande non trouvée")
+
+    user_role = current_user["role"]
+
+    # Si c'est un agent de préparation → accès uniquement à ses commandes
+    if user_role == RoleEnum.AGENT_DE_PREPARATION.value:
+        if order.preparateur_id != current_user["user_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Vous ne pouvez consulter que vos propres commandes"
+            )
+
+    # Les autres rôles autorisés (accueil, superviseur, admin) ont accès libre
     return order
 
 
@@ -167,23 +187,35 @@ def update_status_route(
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Mettre à jour le statut d'une commande (Permissions selon le statut cible)"""
+    """Mettre à jour le statut d'une commande (Permissions selon rôle + attribution)"""
+
+    order = get_order_by_id(db, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Commande non trouvée")
+
     target_status = status_data.statut
     user_role = current_user["role"]
-    
+
+    # Si agent de préparation → vérifier que la commande lui appartient
+    if user_role == RoleEnum.AGENT_DE_PREPARATION.value:
+        if order.preparateur_id != current_user["user_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Vous ne pouvez modifier que vos propres commandes"
+            )
+
     # Vérification des permissions selon le statut cible
     if target_status == OrderStatus.LIVREE:
-        # Seul l'accueil peut livrer/remettre une commande
         if user_role not in [
-            RoleEnum.AGENT_ACCUEIL,
+            RoleEnum.AGENT_ACCUEIL.value,
             RoleEnum.ADMINISTRATEUR.value
-        ]:            
+        ]:
             raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail="Seul un agent d'accueil peut livrer une commande"
-                    )
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Seul un agent d'accueil peut livrer une commande"
+            )
+
     elif target_status in [OrderStatus.EN_COURS_PREPARATION, OrderStatus.PREPAREE]:
-        # Seuls les préparateurs peuvent changer vers ces statuts
         if user_role not in [
             RoleEnum.AGENT_DE_PREPARATION.value,
             RoleEnum.SUPERVISEUR_DE_PREPARATION.value,
@@ -193,18 +225,17 @@ def update_status_route(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Seul un agent de préparation peut modifier ce statut"
             )
+
     else:
-        # Autres statuts réservés à l'admin
         if user_role != RoleEnum.ADMINISTRATEUR.value:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Vous n'avez pas les permissions pour ce changement de statut"
             )
-    
-    order = update_order_status(db, order_id, target_status)
-    if not order:
-        raise HTTPException(status_code=404, detail="Commande non trouvée")
-    return order
+
+    return update_order_status(db, order_id, target_status)
+
+
 
 
 @router.patch("/{order_id}/assign/{preparateur_id}", response_model=OrderWithDetailsResponse,
@@ -218,11 +249,13 @@ def assign_preparateur_route(
     preparateur_id: int,
     db: Session = Depends(get_db)
 ):
-    """Assigner un préparateur à une commande (Superviseur uniquement)"""
+    """Assigner un préparateur à une commande (Superviseur et Admin)"""
     order = assign_preparateur(db, order_id, preparateur_id)
     if not order:
         raise HTTPException(status_code=404, detail="Commande non trouvée")
     return order
+
+
 
 
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT,

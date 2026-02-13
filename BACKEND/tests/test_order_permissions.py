@@ -83,15 +83,16 @@ class TestOrderPermissions:
     # ==========================================
 
     def test_authenticated_user_can_view_order(self, client, preparateur_token, auth_headers, sample_order_data):
-        """Un utilisateur authentifié peut voir une commande"""
-        # Créer une commande
-        create_resp = client.post("/orders/", json=sample_order_data)
+        """Un utilisateur authentifié peut voir une commande qui lui est attribuée"""
+        # Créer une commande assignée au préparateur (user_id=3)
+        order_data = {**sample_order_data, "preparateur_id": 3}
+        create_resp = client.post("/orders/", json=order_data)
         order_id = create_resp.json()["id"]
-        
+
         # La consulter
         response = client.get(f"/orders/{order_id}", headers=auth_headers(preparateur_token))
-        assert response.status_code == status.HTTP_200_OK
-
+        assert response.status_code == status.HTTP_200_OK    
+        
     def test_unauthenticated_cannot_view_order(self, client, sample_order_data):
         """Un utilisateur non authentifié ne peut pas voir une commande"""
         # Créer une commande
@@ -101,17 +102,29 @@ class TestOrderPermissions:
         # Essayer de la consulter sans auth
         response = client.get(f"/orders/{order_id}")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        
+        
+    def test_preparateur_cannot_view_other_order(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur ne peut pas voir une commande qui ne lui appartient pas"""
+        # Créer une commande assignée à un AUTRE préparateur (user_id=1, pas 3)
+        order_data = {**sample_order_data, "preparateur_id": 1}
+        create_resp = client.post("/orders/", json=order_data)
+        order_id = create_resp.json()["id"]
 
-    # ==========================================
-    # PATCH /orders/{id}/status - Changement de statut
-    # ==========================================
+        response = client.get(f"/orders/{order_id}", headers=auth_headers(preparateur_token))
+        assert response.status_code == status.HTTP_403_FORBIDDEN    
+
+        # ==========================================
+        # PATCH /orders/{id}/status - Changement de statut
+        # ==========================================
 
     def test_preparateur_can_change_status(self, client, preparateur_token, auth_headers, sample_order_data):
-        """Un préparateur peut changer le statut d'une commande"""
-        # Créer une commande
-        create_resp = client.post("/orders/", json=sample_order_data)
+        """Un préparateur peut changer le statut d'une commande qui lui est attribuée"""
+        # Créer une commande assignée au préparateur (user_id=3)
+        order_data = {**sample_order_data, "preparateur_id": 3}
+        create_resp = client.post("/orders/", json=order_data)
         order_id = create_resp.json()["id"]
-        
+
         # Changer le statut
         response = client.patch(
             f"/orders/{order_id}/status",
@@ -119,7 +132,23 @@ class TestOrderPermissions:
             headers=auth_headers(preparateur_token)
         )
         assert response.status_code == status.HTTP_200_OK
+        
+        
+    def test_preparateur_cannot_modify_other_order(self, client, preparateur_token, auth_headers, sample_order_data):
+        """Un préparateur ne peut pas modifier le statut d'une commande qui ne lui appartient pas"""
+        # Créer une commande assignée à un AUTRE préparateur (user_id=1, pas 3)
+        order_data = {**sample_order_data, "preparateur_id": 1}
+        create_resp = client.post("/orders/", json=order_data)
+        order_id = create_resp.json()["id"]
 
+        response = client.patch(
+            f"/orders/{order_id}/status",
+            json={"statut": "PREPAREE"},
+            headers=auth_headers(preparateur_token)
+        )
+        assert response.status_code == status.HTTP_403_FORBIDDEN        
+        
+        
     def test_accueil_can_deliver_order(self, client, accueil_token, auth_headers, sample_order_data):
         """Un agent d'accueil peut livrer une commande"""
         # Créer une commande
