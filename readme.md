@@ -1,4 +1,5 @@
 # PROJET WACDO
+[![Voir le projet](https://img.shields.io/badge/WACDO-Live%20Demo-blue?style=for-the-badge)](https://wacdo-kolwaan.alwaysdata.net/)
 
 ## Description
 Application web simulant une borne de commande de restauration rapide.
