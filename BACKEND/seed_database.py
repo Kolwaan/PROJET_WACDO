@@ -28,6 +28,8 @@ def seed_users(db):
 
     created, skipped = 0, 0
 
+# si les données existent déjà, le script ne fait rien
+
     for u in users_to_create:
         existing = db.query(User).filter(User.email == u["email"]).first()
         if existing:
