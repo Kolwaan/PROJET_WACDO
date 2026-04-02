@@ -131,8 +131,8 @@ http://localhost:5501/DATA/categories.json
 http://localhost:5501/DATA/produits.json
 
 En production :
-https://wacdo-kolwaan.alwaysdata.net/data/categories.json
-https://wacdo-kolwaan.alwaysdata.net/data/produits.json
+https://wacdo-kolwaan.alwaysdata.net/DATA/categories.json
+https://wacdo-kolwaan.alwaysdata.net/DATA/produits.json
 
 ## Chargement des données
 Les données des produits sont stockées dans des fichiers JSON et sont chargées dynamiquement côté client à l’aide de l’interface Fetch fournie par le navigateur (requêtes HTTP / AJAX).
