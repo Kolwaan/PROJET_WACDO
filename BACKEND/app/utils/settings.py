@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     
     # JWT Configuration
-    SECRET_KEY: str = "PA3vb088_vz78dN4lDR4tg88bQ3O4-hFEXu0CAKWfHY"
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"    
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
